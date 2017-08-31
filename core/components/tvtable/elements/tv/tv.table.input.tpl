@@ -22,7 +22,7 @@
 <script type="text/javascript">
     
     if(typeof methods == 'undefined'){
-        document.write('<script src="/core/components/tvtable/elements/tvtable.js"><\/script>');
+        document.write('<script src="/assets/components/tvtable/js/mgr/tvtable.js"><\/script>');
     }
     
     window.ie9=window.XDomainRequest && window.performance; window.ie=window.ie && !window.ie9; /* IE9 patch */
