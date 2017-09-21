@@ -28,8 +28,8 @@
     window.ie9=window.XDomainRequest && window.performance; window.ie=window.ie && !window.ie9; /* IE9 patch */
    
     $(document).ready(function () {
-        var tvIds = {$tv->id};
-        $.myPlug('init', 'tv'+{$tv->id});
+        var tvIds = "{$tv->id}";
+        $.myPlug('init', "tv{$tv->id}");
        
     });
   </script>
