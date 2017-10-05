@@ -1,5 +1,9 @@
 Changelog for TVTable.
 
+1.0.3-beta
+==============
+- Fixed use in MIGX
+
 1.0.2-beta
 ==============
 - Many tables on document form
