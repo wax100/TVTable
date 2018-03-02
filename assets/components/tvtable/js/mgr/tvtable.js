@@ -20,13 +20,13 @@ var methods = {
         for (var i=0;i<values.length;i++) {
             $rowDiv.append(methods.build(values[i]));
         }
-        $add = $('<input type="button" value=">>" title="добавить столбик" class="add"></input> ');
+        $add = $(' <input type="button" value="&#xf054;" title="'+_('tvtable.add_column')+'" class="add x-btn x-btn-small">  ');
         $rowDiv.append($add);
-        $del = $('<input type="button" value="<<" title="удалить столбик"  class="del"></input> ');
+        $del = $('<input type="button" value="&#xf053;" title="'+_('tvtable.del_column')+'"  class="del x-btn x-btn-small"> ');
         $rowDiv.append($del);
     },
     build: function(val){
-        return $('<input type="text" value="'+val+'" ></input> ');
+        return $('<input type="text" class="x-form-text x-form-field" value="'+val+'" ></input> ');
     },
     addItem: function(values,elem, fidd){
         
@@ -50,10 +50,10 @@ var methods = {
             }
         }
         
-        $rowDiv.append('<input type="button" value="+" title="добавить строку" class="add_item"></input>');
+        $rowDiv.append('<input type="button" value="&#xf078;"   title="'+_('tvtable.add_row')+'" class="add_item x-btn x-btn-small">');
         
         if ($(fidd).next().find('div.tvtrow').length > 2){
-            $rowDiv.append('<input type="button" value="-" title="удалить строку" class="del_item"></input>');
+            $rowDiv.append('<input type="button" value="&#xf077;" title="'+_('tvtable.del_row')+'" class="del_item x-btn x-btn-small">');
         }
     },
     setEditor: function(fid){
@@ -77,12 +77,12 @@ $.myPlug = function(method) {
         } else if (typeof method === 'object' || ! method) {
         return methods.init.apply(this, arguments);
         } else {
-        $.error( 'Метод с именем ' +  method + ' не существует для $.chats' );
+        $.error( 'No method ' +  method + ' exists for $.chats' );
     } 
 };
 
 $('body').on('keyup', 'input[type="text"]', function(){
-     $.myPlug('setEditor', $(this).closest('.tvtEditor').prev().attr('id'));
+    $.myPlug('setEditor', $(this).closest('.tvtEditor').prev().attr('id'));
     MODx.fireResourceFormChange();
 });
 
@@ -101,12 +101,12 @@ $('body').on('click', '.del_item', function(){
 // добавить удалить столбик 
 
 $('body').on('click', '.del', function(){
-     var iff = $(this).closest('.tvtEditor').prev().attr('id')
+    var iff = $(this).closest('.tvtEditor').prev().attr('id')
     if ($(this).parent().find('input[type=text]').length>2){
         $('#' + iff).next().find('div.tvtrow').each(function(item){
             $(this).find('input[type=text]').last().remove();
         });
-         $.myPlug('setEditor', iff);
+        $.myPlug('setEditor', iff);
     }
 });
 
@@ -116,7 +116,7 @@ $('body').on('click', '.add', function(){
     $('#' + iff).next().find('div.tvtrow').each(function(item){
         methods.build('').insertAfter($(this).find('input[type=text]').last());
     });
-  $.myPlug('setEditor', iff);
+    $.myPlug('setEditor', iff);
 });
 
 

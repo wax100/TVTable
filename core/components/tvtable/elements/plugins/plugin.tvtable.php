@@ -12,4 +12,7 @@ switch ($modx->event->name) {
 	case 'OnDocFormPrerender':
 		$modx->regClientStartupScript('//code.jquery.com/jquery-1.11.2.min.js');
 		break;
+	 case 'OnManagerPageBeforeRender':
+        $modx->controller->addLexiconTopic('tvtable:default');
+         break;
 }

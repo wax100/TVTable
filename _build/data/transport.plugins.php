@@ -11,7 +11,8 @@ $tmp = array(
         'events' => array(
             'OnTVInputRenderList' => array(),
             'OnTVInputPropertiesList' => array(),
-            'OnDocFormPrerender' => array()
+            'OnDocFormPrerender' => array(),
+            'OnManagerPageBeforeRender' => array(),
         )
     )
     

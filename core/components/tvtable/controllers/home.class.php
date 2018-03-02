@@ -16,7 +16,7 @@ class TVTableHomeManagerController extends modExtraManagerController
     public function initialize()
     {
         $path = $this->modx->getOption('tvtable_core_path', null,
-                $this->modx->getOption('core_path') . 'components/tvtable/') . 'model/tvtable/';
+        $this->modx->getOption('core_path') . 'components/tvtable/') . 'model/tvtable/';
         $this->TVTable = $this->modx->getService('tvtable', 'TVTable', $path);
         parent::initialize();
     }
