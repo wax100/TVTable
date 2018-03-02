@@ -1,29 +1,46 @@
 <?php
 /** @var modX $modx */
 /** @var array $scriptProperties */
-if (!isset($tv)){
-   return;
+$tv = (int)$tv ;
+ 
+if ($tv == 0){
+    return ;
 }
-
-$tv = (int)$tv;
-$classname = isset($classname) ? $classname : 'pricelist';
-$did =isset($id) ? $id : $modx->resource->id;
-
-if ($tvObject = $modx->getObject('modTemplateVarResource', array('tmplvarid' => $tv, 'contentid' => $did ))){
-    $tvv = $tvObject->get('value');
+$resource = isset($id) ? $id : $modx->resource->id;
+$tvObject = $modx->getObject('modTemplateVarResource', array('tmplvarid' => $tv, 'contentid' => $resource ));
+ if (!$tvObject){
+    return ;
 }
-
+$tvv = $tvObject->get('value');
 if (!$tvv || $tvv=='[["",""],["",""]]') return;
+
 $tvtArr=json_decode($tvv);
 
-$output='<table class="'.$classname.'">'."\n";
-$output .='<tr>'."\n";
-for($i=0; $i<count($tvtArr[0]); $i++) $output .='<th'.($i ? '' : ' class="first"').'>'.$tvtArr[0][$i].'</th>'."\n";
-$output.='</tr>'."\n";
-for($row=1; $row<count($tvtArr); $row++) {
-	$output .='<tr'.(($row%2) ? '' : ' class="altrow"').'>'."\n";
-	for($i=0; $i<count($tvtArr[$row]); $i++) $output .='<td'.($i ? '' : ' class="first"').'>'.$tvtArr[$row][$i].'</td>'."\n";
-	$output.='</tr>'."\n";
+/** @var pdoFetch $pdoFetch */
+$fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
+$path = $modx->getOption('pdofetch_class_path', null, MODX_CORE_PATH . 'components/pdotools/model/', true);
+if ($pdoClass = $modx->loadClass($fqn, $path, false, true)) {
+    $pdoFetch = new $pdoClass($modx, $scriptProperties);
+} else {
+    return false;
 }
-$output.='</table>';
+$pdoFetch->addTime('pdoTools loaded');
+$output = $pdoFetch->run();
+
+$fastMode = $pdoFetch->config['fastMode'];
+ $is_header = 1;
+for($row=0; $row<count($tvtArr); $row++) {
+    $cells = '';
+    for($i=0; $i<count($tvtArr[$row]); $i++){
+        $tpl = $tdTpl;
+        if($is_header){
+            $tpl = $thTpl;
+             $is_header=0;
+        } 
+        $cells.=$pdoFetch->getChunk($tpl,  array('val' => $tvtArr[$row][$i]), $fastMode);
+       
+    }
+    $rows.=$pdoFetch->getChunk($trTpl,  array('cells' => $cells), $fastMode);
+ }
+$output = $pdoFetch->getChunk($wrapperTpl,  array('table' => $rows, 'classname'=>$classname), $fastMode);
 return $output;

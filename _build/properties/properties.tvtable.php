@@ -3,36 +3,36 @@
 $properties = array();
 
 $tmp = array(
-/*
-    'tpl' => array(
+
+    'classname' => array(
         'type' => 'textfield',
-        'value' => 'tpl.TVTable.item',
+        'value' => 'tvtable',
     ),
-    'sortby' => array(
-        'type' => 'textfield',
-        'value' => 'name',
-    ),
-    'sortdir' => array(
-        'type' => 'list',
-        'options' => array(
-            array('text' => 'ASC', 'value' => 'ASC'),
-            array('text' => 'DESC', 'value' => 'DESC'),
-        ),
-        'value' => 'ASC',
-    ),
-    'limit' => array(
+    'tv' => array(
         'type' => 'numberfield',
-        'value' => 10,
+        'value' => 0,
     ),
-    'outputSeparator' => array(
+    'resource' => array(
+        'type' => 'numberfield',
+        'value' => 0,
+    ),
+    'tdTpl' => array(
         'type' => 'textfield',
-        'value' => "\n",
+        'value' => '@INLINE <td>[[+val]]</td>',
     ),
-    'toPlaceholder' => array(
-        'type' => 'combo-boolean',
-        'value' => false,
+     'thTpl' => array(
+        'type' => 'textfield',
+        'value' => '@INLINE <th>[[+val]]</th>',
     ),
-*/
+    'trTpl' => array(
+        'type' => 'textfield',
+        'value' => '@INLINE <tr>[[+cells]]</tr>',
+    ),
+    'wrapperTpl' => array(
+        'type' => 'textfield',
+        'value' => '@INLINE <table class="[[+classname]]"><tbody>[[+table]]</tbody></table>',
+    ),
+
 );
 
 foreach ($tmp as $k => $v) {
