@@ -1,2 +1,5 @@
 .idea
-config.core.php
+ 
+# ignore everything in this directory
+../*
+ 
