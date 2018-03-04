@@ -10,7 +10,9 @@ switch ($modx->event->name) {
 		$modx->event->output($corePath . 'elements/tv/inputoptions/');
 		break;
 	case 'OnDocFormPrerender':
-		$modx->regClientStartupScript('//code.jquery.com/jquery-1.11.2.min.js');
+        $modx->regClientCSS('/assets/components/tvtable/css/mgr/tvtable.css');
+        $modx->regClientStartupScript('//code.jquery.com/jquery-1.11.2.min.js');
+		$modx->regClientStartupScript('/assets/components/tvtable/js/mgr/tvtable.js');
 		break;
 	 case 'OnManagerPageBeforeRender':
         $modx->controller->addLexiconTopic('tvtable:default');

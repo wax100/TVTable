@@ -48,33 +48,6 @@ class TVTableHomeManagerController extends modExtraManagerController
         return $this->modx->lexicon('tvtable');
     }
 
-
-    /**
-     * @return void
-     */
-    public function loadCustomCssJs()
-    {
-        $this->addCss($this->TVTable->config['cssUrl'] . 'mgr/main.css');
-        $this->addCss($this->TVTable->config['cssUrl'] . 'mgr/bootstrap.buttons.css');
-        $this->addJavascript($this->TVTable->config['jsUrl'] . 'mgr/tvtable.js');
-        $this->addJavascript($this->TVTable->config['jsUrl'] . 'mgr/misc/utils.js');
-        $this->addJavascript($this->TVTable->config['jsUrl'] . 'mgr/misc/combo.js');
-        $this->addJavascript($this->TVTable->config['jsUrl'] . 'mgr/widgets/items.grid.js');
-        $this->addJavascript($this->TVTable->config['jsUrl'] . 'mgr/widgets/items.windows.js');
-        $this->addJavascript($this->TVTable->config['jsUrl'] . 'mgr/widgets/home.panel.js');
-        $this->addJavascript($this->TVTable->config['jsUrl'] . 'mgr/sections/home.js');
-
-        $this->addHtml('<script type="text/javascript">
-        TVTable.config = ' . json_encode($this->TVTable->config) . ';
-        TVTable.config.connector_url = "' . $this->TVTable->config['connectorUrl'] . '";
-        Ext.onReady(function() {
-            MODx.load({ xtype: "tvtable-page-home"});
-        });
-        </script>
-        ');
-    }
-
-
     /**
      * @return string
      */

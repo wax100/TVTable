@@ -4,14 +4,13 @@ var methods = {
         fidd = $('#'+fid);
         $fid = $('#'+fid);
         var tvtArr = ($fid.val()) ? $.parseJSON($fid.val()) : [["",""], ["",""]];
-        
+        console.log(fid)
         $fid.hide();
         $box = $fid.next();
         methods.addHeader(tvtArr[0]);
         for (var row=1;row < tvtArr.length;row++) {
             methods.addItem(tvtArr[row], null, fid);
         }
-        
     },
     addHeader: function(values,elem){
         $rowDiv = $('<div class="tvtrow header"></div>');
@@ -29,12 +28,9 @@ var methods = {
         return $('<input type="text" class="x-form-text x-form-field" value="'+val+'" ></input> ');
     },
     addItem: function(values,elem, fidd){
-        
         fidd = '#'+fidd;
         $rowDiv = $('<div class="tvtrow" style="white-space: nowrap; padding :5px 0; "></div>')
-        
         if (elem){
-            
             $rowDiv.insertAfter(elem);
             }else{
             $(fidd).next().append($rowDiv);
@@ -71,36 +67,36 @@ var methods = {
         MODx.fireResourceFormChange();
     }
 };
+
 $.myPlug = function(method) {
     if (methods[method]) {
-        return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+            return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || ! method) {
-        return methods.init.apply(this, arguments);
+            return methods.init.apply(this, arguments);
         } else {
-        $.error( 'No method ' +  method + ' exists for $.chats' );
+            $.error( 'No method ' +  method + ' exists for $.chats' );
     } 
 };
 
-$('body').on('keyup', 'input[type="text"]', function(){
+$('body, html').on('keyup', 'input[type="text"]', function(){
     $.myPlug('setEditor', $(this).closest('.tvtEditor').prev().attr('id'));
     MODx.fireResourceFormChange();
 });
 
-// добавить удалить строку
-$('body').on('click', '.add_item', function(){
+// add row
+$('body, html').on('click', '.add_item', function(){
     $.myPlug('addItem', $(this).parent().find('input[type="text"]').length,$(this).parent(), $(this).closest('.tvtEditor').prev().attr('id'));
     $.myPlug('setEditor', $(this).closest('.tvtEditor').prev().attr('id'));
 });
-
-$('body').on('click', '.del_item', function(){
+//delete row
+$('body, html').on('click', '.del_item', function(){
     var iff = $(this).closest('.tvtEditor').prev().attr('id')
     $(this).parent().remove();
     $.myPlug('setEditor', iff);
 });
 
-// добавить удалить столбик 
-
-$('body').on('click', '.del', function(){
+// delete column
+$('body, html').on('click', '.del', function(){
     var iff = $(this).closest('.tvtEditor').prev().attr('id')
     if ($(this).parent().find('input[type=text]').length>2){
         $('#' + iff).next().find('div.tvtrow').each(function(item){
@@ -109,8 +105,9 @@ $('body').on('click', '.del', function(){
         $.myPlug('setEditor', iff);
     }
 });
-
-$('body').on('click', '.add', function(){
+// add column
+$('body, html').on('click', '.add', function(){
+        console.log(this)
     var iff = $(this).closest('.tvtEditor').prev().attr('id');
     console.log('#' + iff +' .tvtEditor')
     $('#' + iff).next().find('div.tvtrow').each(function(item){
@@ -118,5 +115,3 @@ $('body').on('click', '.add', function(){
     });
     $.myPlug('setEditor', iff);
 });
-
-
