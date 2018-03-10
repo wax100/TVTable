@@ -41,11 +41,10 @@
             $tpl = $tdTpl;
             if($is_header){
                 $tpl = $thTpl;
-                $is_header=0;
             } 
             $cells.=$pdoFetch->getChunk($tpl,  array('val' => $tvtArr[$row][$i]), $fastMode);
-            
         }
+        $is_header=0;
         $rows.=$pdoFetch->getChunk($trTpl,  array('cells' => $cells), $fastMode);
     }
     $output = $pdoFetch->getChunk($wrapperTpl,  array('table' => $rows, 'classname'=>$classname), $fastMode);
