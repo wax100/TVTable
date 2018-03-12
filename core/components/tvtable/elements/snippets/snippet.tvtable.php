@@ -22,6 +22,14 @@
     
     $tvtArr=json_decode($tvv);
     
+    if ($getX != '' and $getY != '') {
+        if(isset($tvtArr[$y][$x])){
+            return $tvtArr[$y][$x];  
+        }
+        return '';
+    }
+    
+    
     /** @var pdoFetch $pdoFetch */
     $fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
     $path = $modx->getOption('pdofetch_class_path', null, MODX_CORE_PATH . 'components/pdotools/model/', true);
@@ -29,7 +37,7 @@
         $pdoFetch = new $pdoClass($modx, $scriptProperties);
         } else {
         return false;
-    }
+        }
     $pdoFetch->addTime('pdoTools loaded');
     $output = $pdoFetch->run();
     
@@ -38,14 +46,14 @@
     for($row=0; $row<count($tvtArr); $row++) {
         $cells = '';
         for($i=0; $i<count($tvtArr[$row]); $i++){
-            $tpl = $tdTpl;
-            if($is_header){
-                $tpl = $thTpl;
-            } 
-            $cells.=$pdoFetch->getChunk($tpl,  array('val' => $tvtArr[$row][$i]), $fastMode);
+        $tpl = $tdTpl;
+        if($is_header){
+        $tpl = $thTpl;
+        } 
+        $cells.=$pdoFetch->getChunk($tpl,  array('val' => $tvtArr[$row][$i]), $fastMode);
         }
         $is_header=0;
         $rows.=$pdoFetch->getChunk($trTpl,  array('cells' => $cells), $fastMode);
-    }
-    $output = $pdoFetch->getChunk($wrapperTpl,  array('table' => $rows, 'classname'=>$classname), $fastMode);
-return $output;
+        }
+        $output = $pdoFetch->getChunk($wrapperTpl,  array('table' => $rows, 'classname'=>$classname), $fastMode);
+        return $output;        
