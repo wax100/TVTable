@@ -23,8 +23,8 @@
     $tvtArr=json_decode($tvv);
     
     if ($getX != '' and $getY != '') {
-        if(isset($tvtArr[$y][$x])){
-            return $tvtArr[$y][$x];  
+        if(isset($tvtArr[$getX][$getY])){
+            return $tvtArr[$getX][$getY];  
         }
         return '';
     }
