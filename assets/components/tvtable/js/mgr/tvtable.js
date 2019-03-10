@@ -1,10 +1,10 @@
 var methods = {
-    fidd: null, 
-    init : function(fid) { 
+    fidd: null,
+    init : function(fid) {
         fidd = $('#'+fid);
         $fid = $('#'+fid);
-        var tvtArr = ($fid.val()) ? $.parseJSON($fid.val()) : [["",""], ["",""]];
-        console.log(fid)
+        fldval = $fid.val();
+        var tvtArr = fldval ? Ext.util.JSON.decode(fldval) : [["",""], ["",""]];
         $fid.hide();
         $box = $fid.next();
         methods.addHeader(tvtArr[0]);
@@ -19,7 +19,7 @@ var methods = {
         for (var i=0;i<values.length;i++) {
             $rowDiv.append(methods.build(values[i]));
         }
-        $add = $(' <input type="button" value="&#xf054;" title="'+_('tvtable.add_column')+'" class="add x-btn x-btn-small">  ');
+        $add = $('<input type="button" value="&#xf054;" title="'+_('tvtable.add_column')+'" class="add x-btn x-btn-small">  ');
         $rowDiv.append($add);
         $del = $('<input type="button" value="&#xf053;" title="'+_('tvtable.del_column')+'"  class="del x-btn x-btn-small"> ');
         $rowDiv.append($del);
@@ -52,18 +52,40 @@ var methods = {
             $rowDiv.append('<input type="button" value="&#xf077;" title="'+_('tvtable.del_row')+'" class="del_item x-btn x-btn-small">');
         }
     },
+    checkArray: function(array) {
+        if (!Ext.isArray(array)) return false;
+
+        var values = 0;
+        array.forEach(function(item, i, array) {
+            if (Ext.isArray(array)) {
+                item.forEach(function(item, i, array) {
+                    if (item !== '') {
+                        values++;
+                    }
+                });
+            }
+        });
+        
+        return values > 0 ? true : false;
+    },
     setEditor: function(fid){
-        var tvtArr=new Array();
+        var tvtArr = new Array();
         $('#'+fid).next().find('div.tvtrow').each(function(item){
-            var itemsArr=new Array();
-            $inputs=$(this).find('input[type=text]');
+            var itemsArr = new Array();
+            $inputs = $(this).find('input[type=text]');
             $inputs.each(function(item){
-            itemsArr.push($(this).val());}
+                itemsArr.push($(this).val());}
             );
             tvtArr.push(itemsArr);
         });
-        var vl = JSON.stringify(tvtArr);
-        $('#'+fid).val(vl);
+
+        if (methods.checkArray(tvtArr)) {
+            var vl = JSON.stringify(tvtArr);
+            $('#'+fid).val(vl);
+        } else {
+            $('#'+fid).val('');
+        }
+
         MODx.fireResourceFormChange();
     }
 };
@@ -88,7 +110,7 @@ $('body, html').on('click', '.add_item', function(){
     $.myPlug('addItem', $(this).parent().find('input[type="text"]').length,$(this).parent(), $(this).closest('.tvtEditor').prev().attr('id'));
     $.myPlug('setEditor', $(this).closest('.tvtEditor').prev().attr('id'));
 });
-//delete row
+// delete row
 $('body, html').on('click', '.del_item', function(){
     var iff = $(this).closest('.tvtEditor').prev().attr('id')
     $(this).parent().remove();
@@ -107,9 +129,7 @@ $('body, html').on('click', '.del', function(){
 });
 // add column
 $('body, html').on('click', '.add', function(){
-        console.log(this)
     var iff = $(this).closest('.tvtEditor').prev().attr('id');
-    console.log('#' + iff +' .tvtEditor')
     $('#' + iff).next().find('div.tvtrow').each(function(item){
         methods.build('').insertAfter($(this).find('input[type=text]').last());
     });
