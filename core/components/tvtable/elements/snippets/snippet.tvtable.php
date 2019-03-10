@@ -1,12 +1,11 @@
 <?php
     /** @var modX $modx */
     /** @var array $scriptProperties */
-    $tv = (int)$tv ;
+    $tv = (int) $tv;
     
-    if ($tv == 0  && $input == ''){
-        return ;
-    }
-    if($input == ''){
+    if ($tv == 0  && $input == '') return;
+
+    if ($input == '') {
         $resource = isset($id) ? $id : $modx->resource->id;
         $tvObject = $modx->getObject('modTemplateVarResource', array('tmplvarid' => $tv, 'contentid' => $resource ));
         if (!$tvObject){
@@ -14,13 +13,11 @@
         }
         
         $tvv = $tvObject->get('value');
-    }
-    else{
+    } else {
         $tvv = $input;
     }
-    if (!$tvv || $tvv=='[["",""],["",""]]') return;
     
-    $tvtArr=json_decode($tvv);
+    $tvtArr = $modx->fromJSON($tvv);
     
     if ($getX != '' and $getY != '') {
         if(isset($tvtArr[$getX][$getY])){
