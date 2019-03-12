@@ -32,6 +32,22 @@ var TVTable = {
             return parent.appendChild(elem);
         }
     }
+    ,getPrevSibling: function (elem, selector) {
+        var sibling = elem.previousElementSibling;
+        if (!selector) return sibling;
+        while (sibling) {
+            if (sibling.matches(selector)) return sibling;
+            sibling = sibling.previousElementSibling;
+        }
+    }
+    ,getNextSibling: function (elem, selector) {
+        var sibling = elem.nextElementSibling;
+        if (!selector) return sibling;
+        while (sibling) {
+            if (sibling.matches(selector)) return sibling;
+            sibling = sibling.nextElementSibling
+        }
+    }
     ,init: function(fid) {
         var field = document.getElementById(fid);
         var fldval = field.value;
@@ -87,11 +103,7 @@ var TVTable = {
         });
 
         var field = document.getElementById(fidd);
-        var next = field.nextSibling;
-
-        while (next && next.nodeType != 1) {
-            next = next.nextSibling;
-        }
+        var next = TVTable.getNextSibling(field);
 
         if (elem) {
             TVTable._insertAfter(rowDiv, elem);
@@ -129,11 +141,7 @@ var TVTable = {
         var tvtArr = new Array();
 
         var field = document.getElementById(fid);
-        var next = field.nextSibling;
-
-        while (next && next.nodeType != 1) {
-            next = next.nextSibling;
-        }
+        var next = TVTable.getNextSibling(field);
         var rows = next.querySelectorAll('.tvtrow');
 
         for (var x = 0; x < rows.length; x++) {
@@ -203,12 +211,7 @@ document.onclick = function (e) {
 
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-
-        var next = prev.nextSibling;
-        while (next && next.nodeType != 1) {
-            next = next.nextSibling;
-        }
-
+        var next = TVTable.getNextSibling(prev);
         var rows = next.querySelectorAll('.tvtrow');
 
         if (length > 2) {
@@ -223,19 +226,11 @@ document.onclick = function (e) {
     }
     // add column
     if (e.target.classList.contains('add')) {
-        var prev = e.target.closest('.tvtEditor').previousSibling;
-        while (prev && prev.nodeType != 1) {
-            prev = prev.previousSibling;
-        }
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
 
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-
-        var next = prev.nextSibling;
-        while (next && next.nodeType != 1) {
-            next = next.nextSibling;
-        }
-
+        var next = TVTable.getNextSibling(prev);
         var rows = next.querySelectorAll('.tvtrow');
 
         for (var i = 0; i < rows.length; i++) {
