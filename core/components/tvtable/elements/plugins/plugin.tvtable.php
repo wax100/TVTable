@@ -11,7 +11,6 @@ switch ($modx->event->name) {
 		break;
 	case 'OnDocFormPrerender':
         $modx->regClientCSS('/assets/components/tvtable/css/mgr/tvtable.css');
-        $modx->regClientStartupScript('//code.jquery.com/jquery-1.11.2.min.js');
 		$modx->regClientStartupScript('/assets/components/tvtable/js/mgr/tvtable.js');
 		break;
 	 case 'OnManagerPageBeforeRender':

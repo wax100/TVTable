@@ -5,6 +5,6 @@
     
     Ext.onReady(function() {
         var tvIds = "{$tv->id}";
-        $.myPlug('init', "tv{$tv->id}");
+        TVTable.init('tv' + {$tv->id});
     });
 </script>
