@@ -9,18 +9,20 @@ var TVTable = {
     }
     ,_checkArray: function(array) {
         if (!Ext.isArray(array)) return false;
-        var values = 0;
-        array.forEach(function(item, i, array) {
-            if (Ext.isArray(array)) {
-                item.forEach(function(item, i, array) {
-                    if (item !== '') {
-                        values++;
+        var result = false;
+
+        for (var x = 0; x < array.length; x++) {
+            var value = array[x];
+            if (Ext.isArray(value)) {
+                for (var y = 0; y < value.length; y++) {
+                    if (value[y] !== '') {
+                        return true;
                     }
-                });
+                }
             }
-        });
+        }
         
-        return values > 0 ? true : false;
+        return false;
     }
     ,_insertAfter: function (elem, refElem) {
         var parent = refElem.parentNode;
@@ -61,11 +63,7 @@ var TVTable = {
     }
     ,addHeader: function(values, field){
         var rowDiv = TVTable._createElement('div', {class: 'tvtrow header'});
-
-        var box = field.nextSibling;
-        while(box && box.nodeType != 1) {
-            box = box.nextSibling
-        }
+        var box = TVTable.getNextSibling(field);
         box.appendChild(rowDiv);
 
         if (!values) values = ['',''];
@@ -169,10 +167,7 @@ var TVTable = {
 
 document.onkeyup = function (e) {
     if (e.target.type == 'text') {
-        var prev = e.target.closest('.tvtEditor').previousSibling;
-        while (prev && prev.nodeType != 1) {
-            prev = prev.previousSibling;
-        }
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
         TVTable.setEditor(prev.id);
     }
 }
@@ -182,33 +177,22 @@ document.onclick = function (e) {
     if (e.target.classList.contains('add_item')) {
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-        var input = e.target.closest('.tvtEditor').previousSibling;
-    
-        while (input && input.nodeType != 1) {
-            input = input.previousSibling;
-        }
+        var input = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
     
         TVTable.addItem(length, parent, input.id);
         TVTable.setEditor(input.id);
     }
     // Remove row
     if (e.target.classList.contains('del_item')) {
-        var prev = e.target.closest('.tvtEditor').previousSibling;
         var parent = e.target.parentNode;
-        while (prev && prev.nodeType != 1) {
-            prev = prev.previousSibling;
-        }
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
 
         parent.remove();
         TVTable.setEditor(prev.id);
     }
     // delete column
     if (e.target.classList.contains('del')) {
-        var prev = e.target.closest('.tvtEditor').previousSibling;
-        while (prev && prev.nodeType != 1) {
-            prev = prev.previousSibling;
-        }
-
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
         var next = TVTable.getNextSibling(prev);
