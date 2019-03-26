@@ -1,117 +1,228 @@
-var methods = {
-    fidd: null, 
-    init : function(fid) { 
-        fidd = $('#'+fid);
-        $fid = $('#'+fid);
-        var tvtArr = ($fid.val()) ? $.parseJSON($fid.val()) : [["",""], ["",""]];
-        console.log(fid)
-        $fid.hide();
-        $box = $fid.next();
-        methods.addHeader(tvtArr[0]);
-        for (var row=1;row < tvtArr.length;row++) {
-            methods.addItem(tvtArr[row], null, fid);
+var TVTable = {
+    _createElement: function (type, attributes) {
+        var element = document.createElement(type);
+        for (key in attributes) {
+            element.setAttribute(key, attributes[key]);
         }
-    },
-    addHeader: function(values,elem){
-        $rowDiv = $('<div class="tvtrow header"></div>');
-        $box.append($rowDiv);
-        if (!values) values=['',''];
-        for (var i=0;i<values.length;i++) {
-            $rowDiv.append(methods.build(values[i]));
-        }
-        $add = $(' <input type="button" value="&#xf054;" title="'+_('tvtable.add_column')+'" class="add x-btn x-btn-small">  ');
-        $rowDiv.append($add);
-        $del = $('<input type="button" value="&#xf053;" title="'+_('tvtable.del_column')+'"  class="del x-btn x-btn-small"> ');
-        $rowDiv.append($del);
-    },
-    build: function(val){
-        return $('<input type="text" class="x-form-text x-form-field" value="'+val+'" ></input> ');
-    },
-    addItem: function(values,elem, fidd){
-        fidd = '#'+fidd;
-        $rowDiv = $('<div class="tvtrow" style="white-space: nowrap; padding :5px 0; "></div>')
-        if (elem){
-            $rowDiv.insertAfter(elem);
-            }else{
-            $(fidd).next().append($rowDiv);
-        }
-        
-        if(typeof values == 'number'){
-            for (var i=0;i<values;i++) {
-                $rowDiv.append(methods.build(''));
-            }
-            }else{
-            for (var i=0;i<values.length;i++) {
-                $rowDiv.append(methods.build((values) ? values[i] : ''));
+
+        return element;
+    }
+    ,_checkArray: function(array) {
+        if (!Ext.isArray(array)) return false;
+        var result = false;
+
+        for (var x = 0; x < array.length; x++) {
+            var value = array[x];
+            if (Ext.isArray(value)) {
+                for (var y = 0; y < value.length; y++) {
+                    if (value[y] !== '') {
+                        return true;
+                    }
+                }
             }
         }
         
-        $rowDiv.append('<input type="button" value="&#xf078;"   title="'+_('tvtable.add_row')+'" class="add_item x-btn x-btn-small">');
-        
-        if ($(fidd).next().find('div.tvtrow').length > 2){
-            $rowDiv.append('<input type="button" value="&#xf077;" title="'+_('tvtable.del_row')+'" class="del_item x-btn x-btn-small">');
+        return false;
+    }
+    ,_insertAfter: function (elem, refElem) {
+        var parent = refElem.parentNode;
+        var next = refElem.nextSibling;
+
+        if (next) {
+            return parent.insertBefore(elem, next);
+        } else {
+            return parent.appendChild(elem);
         }
-    },
-    setEditor: function(fid){
-        var tvtArr=new Array();
-        $('#'+fid).next().find('div.tvtrow').each(function(item){
-            var itemsArr=new Array();
-            $inputs=$(this).find('input[type=text]');
-            $inputs.each(function(item){
-            itemsArr.push($(this).val());}
-            );
-            tvtArr.push(itemsArr);
+    }
+    ,getPrevSibling: function (elem, selector) {
+        var sibling = elem.previousElementSibling;
+        if (!selector) return sibling;
+        while (sibling) {
+            if (sibling.matches(selector)) return sibling;
+            sibling = sibling.previousElementSibling;
+        }
+    }
+    ,getNextSibling: function (elem, selector) {
+        var sibling = elem.nextElementSibling;
+        if (!selector) return sibling;
+        while (sibling) {
+            if (sibling.matches(selector)) return sibling;
+            sibling = sibling.nextElementSibling
+        }
+    }
+    ,init: function(fid) {
+        var field = document.getElementById(fid);
+        var fldval = field.value;
+        var tvtArr = fldval ? Ext.util.JSON.decode(fldval) : [["",""], ["",""]];
+        field.style.display = 'none';
+
+        TVTable.addHeader(tvtArr[0], field);
+        for (var row = 1; row < tvtArr.length; row++) {
+            TVTable.addItem(tvtArr[row], null, fid);
+        }
+    }
+    ,addHeader: function(values, field){
+        var rowDiv = TVTable._createElement('div', {class: 'tvtrow header'});
+        var box = TVTable.getNextSibling(field);
+        box.appendChild(rowDiv);
+
+        if (!values) values = ['',''];
+
+        for (var i = 0; i < values.length; i++) {
+            rowDiv.appendChild(TVTable.build(values[i]));
+        }
+
+        rowDiv.appendChild(TVTable._createElement('input', {
+            type: 'button'
+            ,value: '\uF054'
+            ,title: _('tvtable.add_column')
+            ,class: 'add x-btn x-btn-small'
+        }));
+
+        rowDiv.appendChild(TVTable._createElement('input', {
+            type: 'button'
+            ,value: '\uf053'
+            ,title: _('tvtable.del_column')
+            ,class: 'del x-btn x-btn-small'
+        }));
+    }
+    ,build: function(val) {
+        return TVTable._createElement('input', {
+            type: 'text'
+            ,value: val
+            ,class: 'x-form-text x-form-field'
         });
-        var vl = JSON.stringify(tvtArr);
-        $('#'+fid).val(vl);
+    }
+    ,addItem: function(values, elem, fidd) {        
+        var rowDiv = TVTable._createElement('div', {
+            type: 'text'
+            ,class: 'tvtrow'
+            ,style: 'white-space: nowrap; padding: 5px 0;'
+        });
+
+        var field = document.getElementById(fidd);
+        var next = TVTable.getNextSibling(field);
+
+        if (elem) {
+            TVTable._insertAfter(rowDiv, elem);
+        } else {
+            next.appendChild(rowDiv);
+        }
+        
+        if (typeof values == 'number') {
+            for (var i = 0; i < values; i++) {
+                rowDiv.appendChild(TVTable.build(''));
+            }
+        } else {
+            for (var i = 0; i < values.length; i++) {
+                rowDiv.appendChild(TVTable.build((values) ? values[i] : ''));
+            }
+        }
+
+        rowDiv.appendChild(TVTable._createElement('input', {
+            type: 'button'
+            ,value: '\uf078'
+            ,title: _('tvtable.add_row')
+            ,class: 'add_item x-btn x-btn-small'
+        }));
+        
+        if (next.querySelectorAll('.tvtrow').length > 2) {
+            rowDiv.appendChild(TVTable._createElement('input', {
+                type: 'button'
+                ,value: '\uf077'
+                ,title: _('tvtable.del_row')
+                ,class: 'del_item x-btn x-btn-small'
+            }));
+        }
+    }
+    ,setEditor: function(fid){
+        var tvtArr = new Array();
+
+        var field = document.getElementById(fid);
+        var next = TVTable.getNextSibling(field);
+        var rows = next.querySelectorAll('.tvtrow');
+
+        for (var x = 0; x < rows.length; x++) {
+            var itemsArr = new Array();
+            var inputs = rows[x].querySelectorAll('input[type="text"]');
+
+            for (var y = 0; y < inputs.length; y++) {
+                var item = inputs[y];
+                itemsArr.push(item.value);
+            }
+
+            tvtArr.push(itemsArr);
+        }
+
+        if (TVTable._checkArray(tvtArr)) {
+            var value = JSON.stringify(tvtArr);
+            field.value = value;
+        } else {
+            field.value = '';
+        }
+
         MODx.fireResourceFormChange();
     }
-};
+}
 
-$.myPlug = function(method) {
-    if (methods[method]) {
-            return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-        } else if (typeof method === 'object' || ! method) {
-            return methods.init.apply(this, arguments);
-        } else {
-            $.error( 'No method ' +  method + ' exists for $.chats' );
-    } 
-};
-
-$('body, html').on('keyup', 'input[type="text"]', function(){
-    $.myPlug('setEditor', $(this).closest('.tvtEditor').prev().attr('id'));
-    MODx.fireResourceFormChange();
-});
-
-// add row
-$('body, html').on('click', '.add_item', function(){
-    $.myPlug('addItem', $(this).parent().find('input[type="text"]').length,$(this).parent(), $(this).closest('.tvtEditor').prev().attr('id'));
-    $.myPlug('setEditor', $(this).closest('.tvtEditor').prev().attr('id'));
-});
-//delete row
-$('body, html').on('click', '.del_item', function(){
-    var iff = $(this).closest('.tvtEditor').prev().attr('id')
-    $(this).parent().remove();
-    $.myPlug('setEditor', iff);
-});
-
-// delete column
-$('body, html').on('click', '.del', function(){
-    var iff = $(this).closest('.tvtEditor').prev().attr('id')
-    if ($(this).parent().find('input[type=text]').length>2){
-        $('#' + iff).next().find('div.tvtrow').each(function(item){
-            $(this).find('input[type=text]').last().remove();
-        });
-        $.myPlug('setEditor', iff);
+document.onkeyup = function (e) {
+    if (e.target.type == 'text') {
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+        TVTable.setEditor(prev.id);
     }
-});
-// add column
-$('body, html').on('click', '.add', function(){
-        console.log(this)
-    var iff = $(this).closest('.tvtEditor').prev().attr('id');
-    console.log('#' + iff +' .tvtEditor')
-    $('#' + iff).next().find('div.tvtrow').each(function(item){
-        methods.build('').insertAfter($(this).find('input[type=text]').last());
-    });
-    $.myPlug('setEditor', iff);
-});
+}
+
+document.onclick = function (e) {
+    // Add row
+    if (e.target.classList.contains('add_item')) {
+        var parent = e.target.parentNode;
+        var length = parent.querySelectorAll('input[type="text"]').length;
+        var input = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+    
+        TVTable.addItem(length, parent, input.id);
+        TVTable.setEditor(input.id);
+    }
+    // Remove row
+    if (e.target.classList.contains('del_item')) {
+        var parent = e.target.parentNode;
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+
+        parent.remove();
+        TVTable.setEditor(prev.id);
+    }
+    // delete column
+    if (e.target.classList.contains('del')) {
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+        var parent = e.target.parentNode;
+        var length = parent.querySelectorAll('input[type="text"]').length;
+        var next = TVTable.getNextSibling(prev);
+        var rows = next.querySelectorAll('.tvtrow');
+
+        if (length > 2) {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var inputs = row.querySelectorAll('input[type=text]');
+
+                inputs[inputs.length - 1].remove();
+            }
+            TVTable.setEditor(prev.id);
+        }
+    }
+    // add column
+    if (e.target.classList.contains('add')) {
+        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+
+        var parent = e.target.parentNode;
+        var length = parent.querySelectorAll('input[type="text"]').length;
+        var next = TVTable.getNextSibling(prev);
+        var rows = next.querySelectorAll('.tvtrow');
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var inputs = row.querySelectorAll('input[type=text]');
+
+            TVTable._insertAfter(TVTable.build(''), inputs[inputs.length - 1])
+        }
+        TVTable.setEditor(prev.id);
+    }
+}
