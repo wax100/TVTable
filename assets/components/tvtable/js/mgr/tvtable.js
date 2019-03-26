@@ -9,7 +9,6 @@ var TVTable = {
     }
     ,_checkArray: function(array) {
         if (!Ext.isArray(array)) return false;
-        var result = false;
 
         for (var x = 0; x < array.length; x++) {
             var value = array[x];
