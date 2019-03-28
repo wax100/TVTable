@@ -3,7 +3,7 @@ function TableTV (id) {
     this.field = document.getElementById(id);
     this.value = this.field.value;
     this.init = function (id) {
-        var tvtArr = this.value ? Ext.util.JSON.decode(this.value) : [["",""]];
+        var tvtArr = this.value ? Ext.util.JSON.decode(this.value) : [[""]];
         this.field.style.display = 'none';
 
         TVTable.addHeader(tvtArr[0], this.field);
@@ -204,7 +204,7 @@ document.onclick = function (e) {
         parent.remove();
         TVTable.setEditor(prev);
     }
-    // delete column
+    // Remove column
     if (e.target.classList.contains('remove-column')) {
         var editor = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
         var parent = e.target.parentNode;
@@ -212,7 +212,7 @@ document.onclick = function (e) {
         var field = TVTable.Util.getNextSibling(editor);
         var rows = field.querySelectorAll('.tvt-row');
 
-        if (length > 2) {
+        if (length > 1) {
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
                 var inputs = row.querySelectorAll('input[type=text]');
@@ -222,11 +222,11 @@ document.onclick = function (e) {
             TVTable.setEditor(editor);
         }
 
-        if (length === 3) {
+        if (length === 2) {
             e.target.remove();
         }
     }
-    // add column
+    // Add column
     if (e.target.classList.contains('add-column')) {
         var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
 
@@ -235,7 +235,7 @@ document.onclick = function (e) {
         var editor = TVTable.Util.getNextSibling(field);
         var rows = editor.querySelectorAll('.tvt-row');
         
-        if (length >= 2 && !parent.querySelectorAll('.remove-column').length) {
+        if (length >= 1 && !parent.querySelectorAll('.remove-column').length) {
             TVTable.Util.insertAfter(TVTable.Util.createElement('input', {
                 type: 'button'
                 ,value: '\uf053'
