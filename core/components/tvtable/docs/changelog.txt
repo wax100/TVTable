@@ -1,5 +1,12 @@
 Changelog for TVTable.
 
+3.0.0-beta
+==============
+- Redesign
+- Fix add row button
+- Fix the bug when 2nd row is empty
+- Now you can create one row and one column
+
 2.0.2-beta
 ==============
 - Main js enhancement
