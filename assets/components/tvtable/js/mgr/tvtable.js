@@ -3,7 +3,7 @@ function TableTV (id) {
     this.field = document.getElementById(id);
     this.value = this.field.value;
     this.init = function (id) {
-        var tvtArr = this.value ? Ext.util.JSON.decode(this.value) : [["",""], ["",""]];
+        var tvtArr = this.value ? Ext.util.JSON.decode(this.value) : [["",""]];
         this.field.style.display = 'none';
 
         TVTable.addHeader(tvtArr[0], this.field);
@@ -30,9 +30,9 @@ var TVTable = {
 
         rowDiv.appendChild(this.Util.createElement('input', {
             type: 'button'
-            ,value: '\uF054'
-            ,title: _('tvtable.add_column')
-            ,class: 'add-column x-btn x-btn-small tvt-button primary-button'
+            ,value: '\uf067'
+            ,title: _('tvtable.add_row')
+            ,class: 'add-row x-btn x-btn-small tvt-button primary-button'
         }));
 
         if (values.length > 2) {
@@ -43,6 +43,13 @@ var TVTable = {
                 ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-warning'
             }));
         }
+
+        rowDiv.appendChild(this.Util.createElement('input', {
+            type: 'button'
+            ,value: '\uF054'
+            ,title: _('tvtable.add_column')
+            ,class: 'add-column x-btn x-btn-small tvt-button primary-button'
+        }));
     }
     ,build: function(val) {
         return this.Util.createElement('input', {
@@ -82,14 +89,12 @@ var TVTable = {
             ,class: 'add-row x-btn x-btn-small tvt-button primary-button'
         }));
         
-        if (next.querySelectorAll('.tvt-row').length > 2) {
-            rowDiv.appendChild(this.Util.createElement('input', {
-                type: 'button'
-                ,value: '\uf068'
-                ,title: _('tvtable.del_row')
-                ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-warning'
-            }));
-        }
+        rowDiv.appendChild(this.Util.createElement('input', {
+            type: 'button'
+            ,value: '\uf068'
+            ,title: _('tvtable.del_row')
+            ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-warning'
+        }));
     }
     ,setEditor: function(field){
         var tvtArr = new Array();
@@ -230,13 +235,13 @@ document.onclick = function (e) {
         var editor = TVTable.Util.getNextSibling(field);
         var rows = editor.querySelectorAll('.tvt-row');
         
-        if (TVTable.Util.getNextSibling(e.target, '.remove-column') === undefined) {
-            parent.appendChild(TVTable.Util.createElement('input', {
+        if (length >= 2 && !parent.querySelectorAll('.remove-column').length) {
+            TVTable.Util.insertAfter(TVTable.Util.createElement('input', {
                 type: 'button'
                 ,value: '\uf053'
                 ,title: _('tvtable.del_column')
                 ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-warning'
-            }));
+            }), parent.querySelector('.add-row'));
         }
 
         for (var i = 0; i < rows.length; i++) {

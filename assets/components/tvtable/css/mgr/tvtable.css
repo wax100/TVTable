@@ -36,6 +36,10 @@
     color: #FFF;
 }
 
+.tvt-button:focus {
+    box-shadow: none;
+}
+
 .tvt-button-warning {
     background-color: #d32f2f;
 }
