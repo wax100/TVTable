@@ -35,7 +35,7 @@ var TVTable = {
             ,class: 'add-row x-btn x-btn-small tvt-button primary-button'
         }));
 
-        if (values.length > 2) {
+        if (values.length > 1) {
             rowDiv.appendChild(this.Util.createElement('input', {
                 type: 'button'
                 ,value: '\uf053'
