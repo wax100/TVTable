@@ -1,37 +1,51 @@
+.tvtEditor { 
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .tvtEditor input[type="text"] { 
-    width:200px; 
+    width: 200px; 
     max-width: 200px;
     height: 20px;
     margin-left: 5px;
+    transition: none;
 }
-.tvtEditor input[type="text"]:focus{
-    box-shadow: 0 0 0 1px #556c88;
+
+.tvtEditor input[type="text"]:focus {
+    border-color: #2d86b7;
 }
-.tvtrow.header{
-    background:#f0f0ee; 
-    padding :5px 0; 
-    white-space:nowrap;
+
+.tvt-row {
+    padding: 5px 5px 5px 0; 
+    white-space: nowrap;
 }
-.add, .del, .add_item, .del_item{
+
+.tvt-header {
+    background: #f0f0ee;
+}
+
+.tvt-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 30px;
     height: 30px;
     margin-left: 5px;
     font-family: FontAwesome;
-    background-color:#3697cd;
     color: #FFF;
 }
-.del, .del_item, .del:hover, .del_item:hover{
-    background-color:#ec971f;
+
+.tvt-button-warning {
+    background-color: #d32f2f;
 }
 
-.del_item:hover, .del:hover{
-    box-shadow: 0 0 0 1px #ec971f;
+.tvt-button-warning:hover {
+    background-color: #c62828;
+    box-shadow: none;
 }
-.tvtEditor .icon:before{
-    position: relative;
-    left: 25px;
-    z-index: 999;
+
+.tvt-button-warning:focus {
+    background-color: #b71c1c;
+    box-shadow: none;
 }
-.tvtEditor .icon-minus:before{
-    left: 29px;
-}  
