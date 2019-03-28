@@ -1,5 +1,9 @@
 Changelog for TVTable.
 
+2.0.2-beta
+==============
+- Main js enhancement
+
 2.0.1-beta
 ==============
 - Another fix using in MIGX
