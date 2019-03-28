@@ -1,5 +1,37 @@
 Changelog for TVTable.
 
+2.0.2-beta
+==============
+- Main js enhancement
+
+2.0.1-beta
+==============
+- Another fix using in MIGX
+
+2.0.0-beta
+==============
+- Vanilla JS (thanx to https://github.com/GulomovCreative)
+
+1.0.8-beta
+==============
+- Now U can use getX and getY parametres, to return value from array
+
+1.0.7-beta
+==============
+- Now U can use TvTable snippet as modx output modifier - [[*table:tvtable]]
+
+1.0.6-beta
+==============
+- Fix using in migx, fix JS, add CSS in file
+
+1.0.5-beta
+==============
+- Add chunks for table, tr, th, td
+
+1.0.4-beta
+==============
+- Add lexicon and add CSS
+
 1.0.3-beta
 ==============
 - Fixed use in MIGX

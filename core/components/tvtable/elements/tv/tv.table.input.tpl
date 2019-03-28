@@ -4,7 +4,7 @@
     window.ie9=window.XDomainRequest && window.performance; window.ie=window.ie && !window.ie9; /* IE9 patch */
     
     Ext.onReady(function() {
-        var tvIds = "{$tv->id}";
-        TVTable.init('tv' + {$tv->id});
+        var tvId = "tv" + "{$tv->id}";
+        new TableTV(tvId);
     });
 </script>

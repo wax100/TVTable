@@ -1,85 +1,41 @@
-var TVTable = {
-    _createElement: function (type, attributes) {
-        var element = document.createElement(type);
-        for (key in attributes) {
-            element.setAttribute(key, attributes[key]);
-        }
+function TableTV (id) {
+    this.id = id;
+    this.field = document.getElementById(id);
+    this.value = this.field.value;
+    this.init = function (id) {
+        var tvtArr = this.value ? Ext.util.JSON.decode(this.value) : [["",""], ["",""]];
+        this.field.style.display = 'none';
 
-        return element;
-    }
-    ,_checkArray: function(array) {
-        if (!Ext.isArray(array)) return false;
-        var result = false;
-
-        for (var x = 0; x < array.length; x++) {
-            var value = array[x];
-            if (Ext.isArray(value)) {
-                for (var y = 0; y < value.length; y++) {
-                    if (value[y] !== '') {
-                        return true;
-                    }
-                }
-            }
-        }
-        
-        return false;
-    }
-    ,_insertAfter: function (elem, refElem) {
-        var parent = refElem.parentNode;
-        var next = refElem.nextSibling;
-
-        if (next) {
-            return parent.insertBefore(elem, next);
-        } else {
-            return parent.appendChild(elem);
-        }
-    }
-    ,getPrevSibling: function (elem, selector) {
-        var sibling = elem.previousElementSibling;
-        if (!selector) return sibling;
-        while (sibling) {
-            if (sibling.matches(selector)) return sibling;
-            sibling = sibling.previousElementSibling;
-        }
-    }
-    ,getNextSibling: function (elem, selector) {
-        var sibling = elem.nextElementSibling;
-        if (!selector) return sibling;
-        while (sibling) {
-            if (sibling.matches(selector)) return sibling;
-            sibling = sibling.nextElementSibling
-        }
-    }
-    ,init: function(fid) {
-        var field = document.getElementById(fid);
-        var fldval = field.value;
-        var tvtArr = fldval ? Ext.util.JSON.decode(fldval) : [["",""], ["",""]];
-        field.style.display = 'none';
-
-        TVTable.addHeader(tvtArr[0], field);
+        TVTable.addHeader(tvtArr[0], this.field);
         for (var row = 1; row < tvtArr.length; row++) {
-            TVTable.addItem(tvtArr[row], null, fid);
+            TVTable.addItem(tvtArr[row], null, this.field);
         }
     }
-    ,addHeader: function(values, field){
-        var rowDiv = TVTable._createElement('div', {class: 'tvtrow header'});
-        var box = TVTable.getNextSibling(field);
+
+    this.init(id);
+    TVTable.TVs[id] = this;
+}
+
+var TVTable = {
+    addHeader: function(values, field) {
+        var rowDiv = this.Util.createElement('div', {class: 'tvtrow header'});
+        var box = this.Util.getNextSibling(field);
         box.appendChild(rowDiv);
 
         if (!values) values = ['',''];
 
         for (var i = 0; i < values.length; i++) {
-            rowDiv.appendChild(TVTable.build(values[i]));
+            rowDiv.appendChild(this.build(values[i]));
         }
 
-        rowDiv.appendChild(TVTable._createElement('input', {
+        rowDiv.appendChild(this.Util.createElement('input', {
             type: 'button'
             ,value: '\uF054'
             ,title: _('tvtable.add_column')
             ,class: 'add x-btn x-btn-small'
         }));
 
-        rowDiv.appendChild(TVTable._createElement('input', {
+        rowDiv.appendChild(this.Util.createElement('input', {
             type: 'button'
             ,value: '\uf053'
             ,title: _('tvtable.del_column')
@@ -87,39 +43,38 @@ var TVTable = {
         }));
     }
     ,build: function(val) {
-        return TVTable._createElement('input', {
+        return this.Util.createElement('input', {
             type: 'text'
             ,value: val
             ,class: 'x-form-text x-form-field'
         });
     }
-    ,addItem: function(values, elem, fidd) {        
-        var rowDiv = TVTable._createElement('div', {
+    ,addItem: function(values, elem, field) {        
+        var rowDiv = this.Util.createElement('div', {
             type: 'text'
             ,class: 'tvtrow'
             ,style: 'white-space: nowrap; padding: 5px 0;'
         });
 
-        var field = document.getElementById(fidd);
-        var next = TVTable.getNextSibling(field);
+        var next = this.Util.getNextSibling(field);
 
         if (elem) {
-            TVTable._insertAfter(rowDiv, elem);
+            this.Util.insertAfter(rowDiv, elem);
         } else {
             next.appendChild(rowDiv);
         }
         
         if (typeof values == 'number') {
             for (var i = 0; i < values; i++) {
-                rowDiv.appendChild(TVTable.build(''));
+                rowDiv.appendChild(this.build(''));
             }
         } else {
             for (var i = 0; i < values.length; i++) {
-                rowDiv.appendChild(TVTable.build((values) ? values[i] : ''));
+                rowDiv.appendChild(this.build((values) ? values[i] : ''));
             }
         }
 
-        rowDiv.appendChild(TVTable._createElement('input', {
+        rowDiv.appendChild(this.Util.createElement('input', {
             type: 'button'
             ,value: '\uf078'
             ,title: _('tvtable.add_row')
@@ -127,7 +82,7 @@ var TVTable = {
         }));
         
         if (next.querySelectorAll('.tvtrow').length > 2) {
-            rowDiv.appendChild(TVTable._createElement('input', {
+            rowDiv.appendChild(this.Util.createElement('input', {
                 type: 'button'
                 ,value: '\uf077'
                 ,title: _('tvtable.del_row')
@@ -135,11 +90,10 @@ var TVTable = {
             }));
         }
     }
-    ,setEditor: function(fid){
+    ,setEditor: function(field){
         var tvtArr = new Array();
 
-        var field = document.getElementById(fid);
-        var next = TVTable.getNextSibling(field);
+        var next = this.Util.getNextSibling(field);
         var rows = next.querySelectorAll('.tvtrow');
 
         for (var x = 0; x < rows.length; x++) {
@@ -154,21 +108,75 @@ var TVTable = {
             tvtArr.push(itemsArr);
         }
 
-        if (TVTable._checkArray(tvtArr)) {
+        if (this.Util.checkArray(tvtArr)) {
             var value = JSON.stringify(tvtArr);
             field.value = value;
         } else {
             field.value = '';
         }
 
+        this.TVs[field.id].value = value;
         MODx.fireResourceFormChange();
+    }
+    ,TVs: {}
+    ,Util: {
+        createElement: function (type, attributes) {
+            var element = document.createElement(type);
+            for (key in attributes) {
+                element.setAttribute(key, attributes[key]);
+            }
+
+            return element;
+        }
+        ,checkArray: function(array) {
+            if (!Ext.isArray(array)) return false;
+
+            for (var x = 0; x < array.length; x++) {
+                var value = array[x];
+                if (Ext.isArray(value)) {
+                    for (var y = 0; y < value.length; y++) {
+                        if (value[y] !== '') {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+        ,insertAfter: function (elem, refElem) {
+            var parent = refElem.parentNode;
+            var next = refElem.nextSibling;
+
+            if (next) {
+                return parent.insertBefore(elem, next);
+            } else {
+                return parent.appendChild(elem);
+            }
+        }
+        ,getPrevSibling: function (elem, selector) {
+            var sibling = elem.previousElementSibling;
+            if (!selector) return sibling;
+            while (sibling) {
+                if (sibling.matches(selector)) return sibling;
+                sibling = sibling.previousElementSibling;
+            }
+        }
+        ,getNextSibling: function (elem, selector) {
+            var sibling = elem.nextElementSibling;
+            if (!selector) return sibling;
+            while (sibling) {
+                if (sibling.matches(selector)) return sibling;
+                sibling = sibling.nextElementSibling
+            }
+        }
     }
 }
 
 document.onkeyup = function (e) {
     if (e.target.type == 'text') {
-        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
-        TVTable.setEditor(prev.id);
+        var prev = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
+        TVTable.setEditor(prev);
     }
 }
 
@@ -177,25 +185,25 @@ document.onclick = function (e) {
     if (e.target.classList.contains('add_item')) {
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-        var input = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+        var input = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
     
-        TVTable.addItem(length, parent, input.id);
-        TVTable.setEditor(input.id);
+        TVTable.addItem(length, parent, input);
+        TVTable.setEditor(input);
     }
     // Remove row
     if (e.target.classList.contains('del_item')) {
         var parent = e.target.parentNode;
-        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+        var prev = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
 
         parent.remove();
-        TVTable.setEditor(prev.id);
+        TVTable.setEditor(prev);
     }
     // delete column
     if (e.target.classList.contains('del')) {
-        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+        var prev = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-        var next = TVTable.getNextSibling(prev);
+        var next = TVTable.Util.getNextSibling(prev);
         var rows = next.querySelectorAll('.tvtrow');
 
         if (length > 2) {
@@ -205,24 +213,24 @@ document.onclick = function (e) {
 
                 inputs[inputs.length - 1].remove();
             }
-            TVTable.setEditor(prev.id);
+            TVTable.setEditor(prev);
         }
     }
     // add column
     if (e.target.classList.contains('add')) {
-        var prev = TVTable.getPrevSibling(e.target.closest('.tvtEditor'));
+        var prev = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
 
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-        var next = TVTable.getNextSibling(prev);
+        var next = TVTable.Util.getNextSibling(prev);
         var rows = next.querySelectorAll('.tvtrow');
 
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
             var inputs = row.querySelectorAll('input[type=text]');
 
-            TVTable._insertAfter(TVTable.build(''), inputs[inputs.length - 1])
+            TVTable.Util.insertAfter(TVTable.build(''), inputs[inputs.length - 1])
         }
-        TVTable.setEditor(prev.id);
+        TVTable.setEditor(prev);
     }
 }
