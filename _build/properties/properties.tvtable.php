@@ -3,18 +3,26 @@
 $properties = array();
 
 $tmp = array(
-
-    'classname' => array(
+    
+    'tableClass' => array(
         'type' => 'textfield',
-        'value' => 'tvtable',
+        'value' => '',
+    ),
+    'headClass' => array(
+        'type' => 'textfield',
+        'value' => '',
+    ),
+    'bodyClass' => array(
+        'type' => 'textfield',
+        'value' => '',
     ),
     'tv' => array(
-        'type' => 'numberfield',
-        'value' => 0,
+        'type' => 'textfield',
+        'value' => '',
     ),
-    'resource' => array(
+    'id' => array(
         'type' => 'numberfield',
-        'value' => 0,
+        'value' => '',
     ),
     'tdTpl' => array(
         'type' => 'textfield',
@@ -30,7 +38,7 @@ $tmp = array(
     ),
     'wrapperTpl' => array(
         'type' => 'textfield',
-        'value' => '@INLINE <table class="[[+classname]]"><tbody>[[+table]]</tbody></table>',
+        'value' => '@INLINE <table class="[[+classname]]">[[+table]]</table>',
     ),
 
 );
