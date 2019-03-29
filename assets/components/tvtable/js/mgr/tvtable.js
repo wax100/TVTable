@@ -22,8 +22,6 @@ var TVTable = {
         var box = this.Util.getNextSibling(field);
         box.appendChild(rowDiv);
 
-        if (!values) values = ['',''];
-
         for (var i = 0; i < values.length; i++) {
             rowDiv.appendChild(this.build(values[i]));
         }
@@ -68,18 +66,18 @@ var TVTable = {
             ,class: 'x-form-text x-form-field'
         });
     }
-    ,addItem: function(values, elem, field) {        
+    ,addItem: function(values, row, field) {        
         var rowDiv = this.Util.createElement('div', {
             type: 'text'
             ,class: 'tvt-row'
         });
 
-        var next = this.Util.getNextSibling(field);
+        var editor = this.Util.getNextSibling(field);
 
-        if (elem) {
-            this.Util.insertAfter(rowDiv, elem);
+        if (row) {
+            this.Util.insertAfter(rowDiv, row);
         } else {
-            next.appendChild(rowDiv);
+            editor.appendChild(rowDiv);
         }
         
         if (typeof values == 'number') {
@@ -106,12 +104,12 @@ var TVTable = {
             ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-danger'
         }));
     }
-    ,setEditor: function(field){
+    ,setEditor: function(field) {
         var tvtArr = new Array();
 
-        var next = this.Util.getNextSibling(field);
-        var clearBtn = next.querySelector('.clear-table');
-        var rows = next.querySelectorAll('.tvt-row');
+        var editor = this.Util.getNextSibling(field);
+        var clearBtn = editor.querySelector('.clear-table');
+        var rows = editor.querySelectorAll('.tvt-row');
 
         for (var x = 0; x < rows.length; x++) {
             var itemsArr = new Array();
@@ -208,28 +206,28 @@ document.onkeyup = function (e) {
 document.onclick = function (e) {
     // Add row
     if (e.target.classList.contains('add-row')) {
-        var parent = e.target.parentNode;
-        var length = parent.querySelectorAll('input[type="text"]').length;
-        var input = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
+        var row = e.target.parentNode;
+        var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
+        var length = row.querySelectorAll('input[type="text"]').length;
     
-        TVTable.addItem(length, parent, input);
-        TVTable.setEditor(input);
+        TVTable.addItem(length, row, field);
+        TVTable.setEditor(field);
     }
     // Remove row
     if (e.target.classList.contains('remove-row')) {
         var parent = e.target.parentNode;
-        var prev = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
+        var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
 
         parent.remove();
-        TVTable.setEditor(prev);
+        TVTable.setEditor(field);
     }
     // Remove column
     if (e.target.classList.contains('remove-column')) {
-        var editor = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
+        var editor = e.target.closest('.tvtEditor');
+        var field = TVTable.Util.getPrevSibling(editor);
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-        var field = TVTable.Util.getNextSibling(editor);
-        var rows = field.querySelectorAll('.tvt-row');
+        var rows = editor.querySelectorAll('.tvt-row');
 
         if (length > 1) {
             for (var i = 0; i < rows.length; i++) {
@@ -238,7 +236,7 @@ document.onclick = function (e) {
 
                 inputs[inputs.length - 1].remove();
             }
-            TVTable.setEditor(editor);
+            TVTable.setEditor(field);
         }
 
         if (length === 2) {
@@ -247,11 +245,10 @@ document.onclick = function (e) {
     }
     // Add column
     if (e.target.classList.contains('add-column')) {
-        var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
-
+        var editor = e.target.closest('.tvtEditor');
+        var field = TVTable.Util.getPrevSibling(editor);
         var parent = e.target.parentNode;
         var length = parent.querySelectorAll('input[type="text"]').length;
-        var editor = TVTable.Util.getNextSibling(field);
         var rows = editor.querySelectorAll('.tvt-row');
         
         if (length >= 1 && !parent.querySelectorAll('.remove-column').length) {
@@ -273,8 +270,8 @@ document.onclick = function (e) {
     }
     // Clear table
     if (e.target.classList.contains('clear-table')) {
-        var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
-        var editor = TVTable.Util.getNextSibling(field);
+        var editor = e.target.closest('.tvtEditor');
+        var field = TVTable.Util.getPrevSibling(editor);
         var inputs = editor.querySelectorAll('input[type="text"]');
 
         inputs.forEach(function(e) {
