@@ -1,4 +1,5 @@
 <?php
+
 $_lang['tvtable'] = 'TVTable';
 $_lang['tvtable.add_column'] = 'Добавить столбик';
 $_lang['tvtable.del_column'] = 'Удалить столбик';

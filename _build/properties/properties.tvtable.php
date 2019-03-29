@@ -44,6 +44,14 @@ $tmp = array(
         'type' => 'textfield',
         'value' => '@INLINE <table class="[[+classname]]">[[+table]]</table>',
     ),
+    'getY' => array(
+        'type' => 'textfield',
+        'value' => '',
+    ),
+    'getX' => array(
+        'type' => 'textfield',
+        'value' => '',
+    ),
 
 );
 
