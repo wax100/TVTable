@@ -40,7 +40,7 @@ var TVTable = {
                 type: 'button'
                 ,value: '\uf053'
                 ,title: _('tvtable.del_column')
-                ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-warning'
+                ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-danger'
             }));
         }
 
@@ -50,6 +50,16 @@ var TVTable = {
             ,title: _('tvtable.add_column')
             ,class: 'add-column x-btn x-btn-small tvt-button primary-button'
         }));
+
+        if (MODx.config.tvtable_clear_button == 1) {
+            rowDiv.appendChild(this.Util.createElement('input', {
+                type: 'button'
+                ,value: '\uf021'
+                ,title: _('tvtable.clear_table')
+                ,class: 'clear-table x-btn x-btn-small tvt-button tvt-button-warning'
+                ,style: (values.length > 1 || values.length === 1 && values[0] != '') ? 'display: inline-flex;' : 'display: none;'
+            }));
+        }
     }
     ,build: function(val) {
         return this.Util.createElement('input', {
@@ -93,13 +103,14 @@ var TVTable = {
             type: 'button'
             ,value: '\uf068'
             ,title: _('tvtable.del_row')
-            ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-warning'
+            ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-danger'
         }));
     }
     ,setEditor: function(field){
         var tvtArr = new Array();
 
         var next = this.Util.getNextSibling(field);
+        var clearBtn = next.querySelector('.clear-table');
         var rows = next.querySelectorAll('.tvt-row');
 
         for (var x = 0; x < rows.length; x++) {
@@ -118,6 +129,7 @@ var TVTable = {
             var value = JSON.stringify(tvtArr);
             field.value = value;
         } else {
+            clearBtn.style.display = 'none';
             field.value = '';
         }
 
@@ -181,8 +193,15 @@ var TVTable = {
 
 document.onkeyup = function (e) {
     if (e.target.type == 'text') {
-        var prev = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
-        TVTable.setEditor(prev);
+        var editor = e.target.closest('.tvtEditor');
+        var field = TVTable.Util.getPrevSibling(editor);
+        
+        if (MODx.config.tvtable_clear_button == 1) {
+            var clearBtn = editor.querySelector('.clear-table');
+            clearBtn.style.display = 'inline-flex';
+        }
+
+        TVTable.setEditor(field);
     }
 }
 
@@ -240,7 +259,7 @@ document.onclick = function (e) {
                 type: 'button'
                 ,value: '\uf053'
                 ,title: _('tvtable.del_column')
-                ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-warning'
+                ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-danger'
             }), parent.querySelector('.add-row'));
         }
 
@@ -250,6 +269,22 @@ document.onclick = function (e) {
 
             TVTable.Util.insertAfter(TVTable.build(''), inputs[inputs.length - 1])
         }
+        TVTable.setEditor(field);
+    }
+    // Clear table
+    if (e.target.classList.contains('clear-table')) {
+        var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
+        var editor = TVTable.Util.getNextSibling(field);
+        var inputs = editor.querySelectorAll('input[type="text"]');
+
+        inputs.forEach(function(e) {
+            e.value = '';
+        });
+
+        if (MODx.config.tvtable_clear_button == 1) {
+            e.target.style.display = 'none';
+        }
+        
         TVTable.setEditor(field);
     }
 }

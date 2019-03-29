@@ -4,13 +4,12 @@
 
 $settings = array();
 
-$tmp = array(/*
-    'some_setting' => array(
+$tmp = array(
+    'clear_button' => array(
         'xtype' => 'combo-boolean',
-        'value' => true,
+        'value' => false,
         'area' => 'tvtable_main',
     ),
-    */
 );
 
 foreach ($tmp as $k => $v) {

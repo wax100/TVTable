@@ -33,23 +33,36 @@
     height: 30px;
     margin-left: 5px;
     font-family: FontAwesome;
-    color: #FFF;
 }
 
+.tvt-button:hover,
 .tvt-button:focus {
     box-shadow: none;
 }
 
-.tvt-button-warning {
+.tvt-button-danger {
+    color: white;
     background-color: #d32f2f;
 }
 
-.tvt-button-warning:hover {
+.tvt-button-danger:hover {
     background-color: #c62828;
     box-shadow: none;
 }
 
-.tvt-button-warning:focus {
+.tvt-button-danger:focus {
     background-color: #b71c1c;
-    box-shadow: none;
+}
+
+.tvt-button-warning {
+    color: white;
+    background-color: #ffa000;
+}
+
+.tvt-button-warning:hover {
+    background-color: #ff8f00;
+}
+
+.tvt-button-warning:focus {
+    background-color: #ff6f00;
 }
