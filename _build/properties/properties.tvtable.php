@@ -16,6 +16,10 @@ $tmp = array(
         'type' => 'textfield',
         'value' => '',
     ),
+    'head' => array(
+        'type' => 'combo-boolean',
+        'value' => true,
+    ),
     'tv' => array(
         'type' => 'textfield',
         'value' => '',

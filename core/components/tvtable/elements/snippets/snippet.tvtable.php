@@ -7,6 +7,7 @@ $input = $modx->getOption('input', $scriptProperties, '');
 $resource = (int) $modx->getOption('id', $scriptProperties, '');
 $x = $modx->getOption('getX', $scriptProperties, '');
 $y = $modx->getOption('getY', $scriptProperties, '');
+$head = $modx->getOption('head', $scriptProperties, true, true);
 
 $tdTpl = $modx->getOption('tdTpl', $scriptProperties, '@INLINE <td>[[+val]]</td>', true);
 $thTpl = $modx->getOption('thTpl', $scriptProperties, '@INLINE <th>[[+val]]</th>', true);
@@ -18,7 +19,6 @@ $headClass = $modx->getOption('headClass', $scriptProperties, '');
 $bodyClass = $modx->getOption('bodyClass', $scriptProperties, '');
 
 $classname = !empty($classname) ? $classname : $tableClass;
-
 $headOpen = empty($headClass) ? '<thead>' : '<thead class="' . $headClass . '">';
 $bodyOpen = empty($bodyClass) ? '<tbody>' : '<tbody class="' . $bodyClass . '">';
 
@@ -79,16 +79,18 @@ if ($directionX) {
     }
     $rows .= $bodyOpen . $pdoFetch->getChunk($trTpl, array('cells' => $cells), $fastMode) . '</tbody>';
 } else {
-    $rows .= $headOpen;
-    $head = array_shift($values);
-    if (is_array($head)) {
-        foreach ($head as $row) {
-            $rows .= $pdoFetch->getChunk($thTpl, array('val' => $row), $fastMode);
+    if ($head) {
+        $rows .= $headOpen;
+        $head = array_shift($values);
+        if (is_array($head)) {
+            foreach ($head as $row) {
+                $rows .= $pdoFetch->getChunk($thTpl, array('val' => $row), $fastMode);
+            }
+        } else {
+            $rows .= $pdoFetch->getChunk($thTpl, array('val' => $head), $fastMode);
         }
-    } else {
-        $rows .= $pdoFetch->getChunk($thTpl, array('val' => $head), $fastMode);
+        $rows .= '</thead>';
     }
-    $rows .= '</thead>';
     if ($values) {
         $rows .= $bodyOpen;
         foreach ($values as $row) {
