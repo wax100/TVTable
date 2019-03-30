@@ -4,7 +4,7 @@
     align-items: flex-start;
 }
 
-.tvtEditor input[type="text"] { 
+.tvt-input { 
     width: 200px; 
     max-width: 200px;
     height: 20px;
@@ -12,7 +12,7 @@
     transition: none;
 }
 
-.tvtEditor input[type="text"]:focus {
+.tvt-input:focus {
     border-color: #2d86b7;
 }
 

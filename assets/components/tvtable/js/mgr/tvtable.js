@@ -63,7 +63,7 @@ var TVTable = {
         return this.Util.createElement('input', {
             type: 'text'
             ,value: val
-            ,class: 'x-form-text x-form-field'
+            ,class: 'tvt-input x-form-text x-form-field'
         });
     }
     ,addItem: function(values, row, field) {        
@@ -108,12 +108,11 @@ var TVTable = {
         var tvtArr = new Array();
 
         var editor = this.Util.getNextSibling(field);
-        var clearBtn = editor.querySelector('.clear-table');
         var rows = editor.querySelectorAll('.tvt-row');
 
         for (var x = 0; x < rows.length; x++) {
             var itemsArr = new Array();
-            var inputs = rows[x].querySelectorAll('input[type="text"]');
+            var inputs = rows[x].querySelectorAll('input.tvt-input');
 
             for (var y = 0; y < inputs.length; y++) {
                 var item = inputs[y];
@@ -127,7 +126,10 @@ var TVTable = {
             var value = JSON.stringify(tvtArr);
             field.value = value;
         } else {
-            clearBtn.style.display = 'none';
+            if (MODx.config.tvtable_clear_button == 1) {
+                var clearBtn = editor.querySelector('.clear-table');
+                clearBtn.style.display = 'none';
+            }
             field.value = '';
         }
 
@@ -190,7 +192,7 @@ var TVTable = {
 }
 
 document.onkeyup = function (e) {
-    if (e.target.type == 'text') {
+    if (e.target.classList.contains('tvt-input')) {
         var editor = e.target.closest('.tvtEditor');
         var field = TVTable.Util.getPrevSibling(editor);
         
@@ -208,7 +210,7 @@ document.onclick = function (e) {
     if (e.target.classList.contains('add-row')) {
         var row = e.target.parentNode;
         var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
-        var length = row.querySelectorAll('input[type="text"]').length;
+        var length = row.querySelectorAll('input.tvt-input').length;
     
         TVTable.addItem(length, row, field);
         TVTable.setEditor(field);
@@ -226,13 +228,13 @@ document.onclick = function (e) {
         var editor = e.target.closest('.tvtEditor');
         var field = TVTable.Util.getPrevSibling(editor);
         var parent = e.target.parentNode;
-        var length = parent.querySelectorAll('input[type="text"]').length;
+        var length = parent.querySelectorAll('input.tvt-input').length;
         var rows = editor.querySelectorAll('.tvt-row');
 
         if (length > 1) {
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
-                var inputs = row.querySelectorAll('input[type=text]');
+                var inputs = row.querySelectorAll('input.tvt-input');
 
                 inputs[inputs.length - 1].remove();
             }
@@ -248,7 +250,7 @@ document.onclick = function (e) {
         var editor = e.target.closest('.tvtEditor');
         var field = TVTable.Util.getPrevSibling(editor);
         var parent = e.target.parentNode;
-        var length = parent.querySelectorAll('input[type="text"]').length;
+        var length = parent.querySelectorAll('input.tvt-input').length;
         var rows = editor.querySelectorAll('.tvt-row');
         
         if (length >= 1 && !parent.querySelectorAll('.remove-column').length) {
@@ -262,7 +264,7 @@ document.onclick = function (e) {
 
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
-            var inputs = row.querySelectorAll('input[type=text]');
+            var inputs = row.querySelectorAll('input.tvt-input');
 
             TVTable.Util.insertAfter(TVTable.build(''), inputs[inputs.length - 1])
         }
@@ -272,7 +274,7 @@ document.onclick = function (e) {
     if (e.target.classList.contains('clear-table')) {
         var editor = e.target.closest('.tvtEditor');
         var field = TVTable.Util.getPrevSibling(editor);
-        var inputs = editor.querySelectorAll('input[type="text"]');
+        var inputs = editor.querySelectorAll('input.tvt-input');
 
         inputs.forEach(function(e) {
             e.value = '';
