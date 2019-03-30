@@ -1,5 +1,9 @@
 Changelog for TVTable.
 
+3.1.1-beta
+==============
+- Fix the bug when typing on other inputs [JS]
+
 3.1.0-beta
 ==============
 - Added new system setting (tvtable_clear_button) for showing clearing table button (Hidden by default)
