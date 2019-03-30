@@ -1,5 +1,11 @@
 Changelog for TVTable.
 
+3.1.0-beta
+==============
+- Added new system setting (tvtable_clear_button) for showing clearing table button (Hidden by default)
+- Fixed lexicon entries (ru, en)
+- Fixed and improved main js
+
 3.0.0-beta
 ==============
 - Redesign
