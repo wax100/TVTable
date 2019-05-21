@@ -37,6 +37,7 @@ function TableTV (id) {
         this.change();
     }
     this.createCell = function (value) {
+        var wrapper = TVTable.createElement('span', {class: 'tvt-input-wrapper'});
         var cell = TVTable.createElement('input', {
             type: 'text'
             ,value: value ? value : ''
@@ -50,7 +51,8 @@ function TableTV (id) {
             }
             this.fieldObject.change();
         }
-        return cell;
+        wrapper.appendChild(cell);
+        return wrapper;
     }
     this.addHeader = function() {
         this.elements.editor.appendChild(this.elements.header);
