@@ -60,10 +60,10 @@ function TableTV (id) {
         this.elements.header.appendChild(this.createAddRow((this.rows >= this.maxRows ? true : false)));
 
         var columnsNotLimited = !this.forceCountColumns && !this.maxColumns;
-        if (columnsNotLimited || this.forceCountColumns && this.columns > this.forceCountColumns || !this.forceCountColumns && this.maxColumns && this.columns <= this.maxColumns) {
+        if (columnsNotLimited || typeof this.forceCountColumns !== 'undefined' && this.columns > this.forceCountColumns || typeof this.forceCountColumns === 'undefined' && typeof this.maxColumns !== 'undefined') {
             this.elements.removeColumn.fieldObject = this;
             this.elements.header.appendChild(this.elements.removeColumn);
-            if (this.columns == 1 || this.maxColumns && this.columns > this.maxColumns) {
+            if (this.columns < 2) {
                 this.elements.removeColumn.classList.add('disabled');
                 this.elements.removeColumn.setAttribute('disabled', true);
             }
@@ -102,7 +102,7 @@ function TableTV (id) {
                 }
             }
         }
-        if (columnsNotLimited || this.forceCountColumns && this.columns < this.forceCountColumns || !this.forceCountColumns && this.maxColumns && this.maxColumns > 1) {
+        if (columnsNotLimited || typeof this.forceCountColumns !== 'undefined' && this.columns < this.forceCountColumns || typeof this.forceCountColumns === 'undefined' && typeof this.maxColumns !== 'undefined' && this.maxColumns > 1) {
             this.elements.addColumn.fieldObject = this;
             this.elements.header.appendChild(this.elements.addColumn);
             if (this.columns >= this.maxColumns && !this.forceCountColumns) {
