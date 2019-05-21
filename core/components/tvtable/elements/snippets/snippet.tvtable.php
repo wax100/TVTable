@@ -36,7 +36,7 @@ if (empty($input)) {
     $value = $input;
 }
 
-$tvtArr = $modx->fromJSON($value);
+if (!$tvtArr = $modx->fromJSON($value)) { return; };
 
 if ($x == 'first') $x = 0;
 if ($y == 'first') $y = 0;
