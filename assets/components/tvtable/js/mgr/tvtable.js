@@ -144,10 +144,15 @@ function TableTV (id) {
             this.elements.clearTable.fieldObject = this;
             this.elements.header.appendChild(this.elements.clearTable);
             this.elements.clearTable.onclick = function () {
-                var inputs = this.fieldObject.elements.editor.querySelectorAll('input.tvt-input');
-                inputs.forEach(function(e){e.value = ''});
-                if (MODx.config.tvtable_clear_button == 1) {this.style.display = 'none' }
-                this.fieldObject.change();
+                var that = this;
+                Ext.Msg.confirm(_('tvtable.clear_table'), _('tvtable.clear_table_confirm'), function(btn) {
+                    if (btn === 'yes') {
+                        var inputs = that.fieldObject.elements.editor.querySelectorAll('input.tvt-input');
+                        inputs.forEach(function(e){e.value = ''});
+                        if (MODx.config.tvtable_clear_button == 1) {that.style.display = 'none' }
+                        that.fieldObject.change();
+                    }
+                });
             }
         }
     }
