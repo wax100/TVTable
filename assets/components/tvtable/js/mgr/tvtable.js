@@ -32,7 +32,7 @@ function TableTV (id) {
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
             var inputs = row.querySelectorAll('input.tvt-input');
-            TVTable.insertAfter(this.createCell(''), inputs[inputs.length - 1])
+            TVTable.insertAfter(this.createCell(), inputs[inputs.length - 1])
         }
         this.change();
     }
@@ -40,7 +40,7 @@ function TableTV (id) {
         var wrapper = TVTable.createElement('span', {class: 'tvt-input-wrapper'});
         var cell = TVTable.createElement('input', {
             type: 'text'
-            ,value: value ? value : ''
+            ,value: value || ''
             ,class: 'tvt-input x-form-text x-form-field'
         });
         cell.fieldObject = this;
@@ -227,11 +227,11 @@ function TableTV (id) {
         
         if (typeof values == 'number') {
             for (var i = 0; i < values; i++) {
-                rowDiv.appendChild(this.createCell(''));
+                rowDiv.appendChild(this.createCell());
             }
         } else {
             for (var i = 0; i < values.length; i++) {
-                rowDiv.appendChild(this.createCell((values) ? values[i] : ''));
+                rowDiv.appendChild(this.createCell(values[i]));
             }
         }
         rowDiv.appendChild(this.createAddRow(disabled));        
