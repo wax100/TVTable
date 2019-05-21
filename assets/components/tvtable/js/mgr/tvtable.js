@@ -265,17 +265,18 @@ function TableTV (id) {
     }
     this.init = function () {
         this.field.style.display = 'none';
-        if (this.value[0].length < this.columns) {
-            var diff = this.columns - tvtArr[0].length;
-            tvtArr.forEach(function(column) {
+        this.columns = this.value[0].length;
+        if (typeof this.forceCountColumns !== 'undefined' && this.columns < this.forceCountColumns) {
+            var diff = this.forceCountColumns - this.columns;
+            this.value.forEach(function(column) {
                 for (var i = 0; i < diff; i++) {
                     column.push('');
                 }
             });
+            this.columns = this.columns + diff;
         }
-        this.rows = this.value.length;
         this.header = this.value[0];
-        this.columns = this.header.length;
+        this.rows = this.value.length;
         this.addHeader();
         for (var row = 1; row < this.rows; row++) {
             this.addRow(this.value[row], null, (this.rows >= this.maxRows ? true : false));
