@@ -1,289 +1,321 @@
 function TableTV (id) {
     this.id = id;
     this.field = document.getElementById(id);
-    this.value = this.field.value;
-    this.init = function (id) {
-        var tvtArr = this.value ? Ext.util.JSON.decode(this.value) : [[""]];
-        this.field.style.display = 'none';
-
-        TVTable.addHeader(tvtArr[0], this.field);
-        for (var row = 1; row < tvtArr.length; row++) {
-            TVTable.addItem(tvtArr[row], null, this.field);
-        }
-    }
-
-    this.init(id);
-    TVTable.TVs[id] = this;
-}
-
-var TVTable = {
-    addHeader: function(values, field) {
-        var rowDiv = this.Util.createElement('div', {class: 'tvt-row tvt-header'});
-        var box = this.Util.getNextSibling(field);
-        box.appendChild(rowDiv);
-
-        for (var i = 0; i < values.length; i++) {
-            rowDiv.appendChild(this.build(values[i]));
-        }
-
-        rowDiv.appendChild(this.Util.createElement('input', {
-            type: 'button'
-            ,value: '\uf067'
-            ,title: _('tvtable.add_row')
-            ,class: 'add-row x-btn x-btn-small tvt-button primary-button'
-        }));
-
-        if (values.length > 1) {
-            rowDiv.appendChild(this.Util.createElement('input', {
-                type: 'button'
-                ,value: '\uf053'
-                ,title: _('tvtable.del_column')
-                ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-danger'
-            }));
-        }
-
-        rowDiv.appendChild(this.Util.createElement('input', {
+    this.forceCountColumns = this.field.dataset.columns;
+    this.maxColumns = this.field.dataset.maxColumns;
+    this.maxRows = this.field.dataset.maxRows;
+    this.value = this.field.value ? Ext.util.JSON.decode(this.field.value) : new Array(Array.from({length: this.columns || this.forceCountColumns || 1}));
+    this.elements = {
+        editor: TVTable.insertAfter(TVTable.createElement('div', {class: 'tvtEditor'}), this.field),
+        addColumn: TVTable.createElement('input', {
             type: 'button'
             ,value: '\uF054'
             ,title: _('tvtable.add_column')
             ,class: 'add-column x-btn x-btn-small tvt-button primary-button'
-        }));
-
-        if (MODx.config.tvtable_clear_button == 1) {
-            rowDiv.appendChild(this.Util.createElement('input', {
-                type: 'button'
-                ,value: '\uf021'
-                ,title: _('tvtable.clear_table')
-                ,class: 'clear-table x-btn x-btn-small tvt-button tvt-button-warning'
-                ,style: (values.length > 1 || values.length === 1 && values[0] != '') ? 'display: inline-flex;' : 'display: none;'
-            }));
-        }
+        }),
+        removeColumn: TVTable.createElement('input', {
+            type: 'button'
+            ,value: '\uf053'
+            ,title: _('tvtable.del_column')
+            ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-danger'
+        }),
+        clearTable: TVTable.createElement('input', {
+            type: 'button'
+            ,value: '\uf021'
+            ,title: _('tvtable.clear_table')
+            ,class: 'clear-table x-btn x-btn-small tvt-button tvt-button-warning'
+            ,style: TVTable.checkArray(this.value) ? 'display: inline-flex;' : 'display: none;'
+        }),
+        header: TVTable.createElement('div', {class: 'tvt-row tvt-header'}),
     }
-    ,build: function(val) {
-        return this.Util.createElement('input', {
+    this.addColumn = function(rows) {
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var inputs = row.querySelectorAll('input.tvt-input');
+            TVTable.insertAfter(this.createCell(''), inputs[inputs.length - 1])
+        }
+        this.change();
+    }
+    this.createCell = function (value) {
+        var cell = TVTable.createElement('input', {
             type: 'text'
-            ,value: val
+            ,value: value ? value : ''
             ,class: 'tvt-input x-form-text x-form-field'
         });
+        cell.fieldObject = this;
+        cell.onkeyup = function() {            
+            if (MODx.config.tvtable_clear_button == 1) {
+                var clearBtn = this.fieldObject.elements.editor.querySelector('.clear-table');
+                clearBtn.style.display = 'inline-flex';
+            }
+            this.fieldObject.change();
+        }
+        return cell;
     }
-    ,addItem: function(values, row, field) {        
-        var rowDiv = this.Util.createElement('div', {
-            type: 'text'
-            ,class: 'tvt-row'
-        });
-
-        var editor = this.Util.getNextSibling(field);
-
-        if (row) {
-            this.Util.insertAfter(rowDiv, row);
-        } else {
-            editor.appendChild(rowDiv);
+    this.addHeader = function() {
+        this.elements.editor.appendChild(this.elements.header);
+        for (var i = 0; i < this.columns; i++) {
+            this.elements.header.appendChild(this.createCell(this.header[i]));
         }
-        
-        if (typeof values == 'number') {
-            for (var i = 0; i < values; i++) {
-                rowDiv.appendChild(this.build(''));
+        this.elements.header.appendChild(this.createAddRow((this.rows >= this.maxRows ? true : false)));
+
+        var columnsNotLimited = !this.forceCountColumns && !this.maxColumns;
+        if (columnsNotLimited || this.forceCountColumns && this.columns > this.forceCountColumns || !this.forceCountColumns && this.maxColumns && this.columns <= this.maxColumns) {
+            this.elements.removeColumn.fieldObject = this;
+            this.elements.header.appendChild(this.elements.removeColumn);
+            if (this.columns == 1 || this.maxColumns && this.columns > this.maxColumns) {
+                this.elements.removeColumn.classList.add('disabled');
+                this.elements.removeColumn.setAttribute('disabled', true);
             }
-        } else {
-            for (var i = 0; i < values.length; i++) {
-                rowDiv.appendChild(this.build((values) ? values[i] : ''));
+            this.elements.removeColumn.onclick = function () {
+                var columns = this.fieldObject.elements.header.querySelectorAll('input.tvt-input').length;
+                var rows = this.fieldObject.elements.editor.querySelectorAll('.tvt-row');
+
+                if (columns > 1) {
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = rows[i];
+                        var inputs = row.querySelectorAll('input.tvt-input');
+                        inputs[inputs.length - 1].remove();
+                    }
+                    this.fieldObject.change();
+                    columns--;
+                }
+
+                if (columns === 1) {
+                    this.classList.add('disabled');
+                    this.setAttribute('disabled', true);
+                }
+
+                var maxColumns = this.fieldObject.maxColumns;
+                var countColumns = this.fieldObject.forceCountColumns;
+
+                if (countColumns) {
+                    if (columns <= countColumns) {
+                        this.style.display = 'none';
+                    }
+                    if (columns == countColumns) {
+                        if (this.fieldObject.elements.addColumn) this.fieldObject.elements.addColumn.style.display = 'none';
+                    }
+                } else if (maxColumns >= 1 && columns < maxColumns) {
+                    this.fieldObject.elements.addColumn.classList.remove('disabled');
+                    this.fieldObject.elements.addColumn.disabled = false;
+                }
             }
         }
+        if (columnsNotLimited || this.forceCountColumns && this.columns < this.forceCountColumns || !this.forceCountColumns && this.maxColumns && this.maxColumns > 1) {
+            this.elements.addColumn.fieldObject = this;
+            this.elements.header.appendChild(this.elements.addColumn);
+            if (this.columns >= this.maxColumns && !this.forceCountColumns) {
+                this.elements.addColumn.classList.add('disabled');
+                this.elements.addColumn.setAttribute('disabled', true);
+            }
+            this.elements.addColumn.onclick = function() {
+                var columns = this.fieldObject.elements.header.querySelectorAll('input.tvt-input').length+1;
+                var rows = this.fieldObject.elements.editor.querySelectorAll('.tvt-row');
+                if (columns > 1 && this.fieldObject.elements.removeColumn.classList.contains('disabled')) {
+                    this.fieldObject.elements.removeColumn.classList.remove('disabled');
+                    this.fieldObject.elements.removeColumn.removeAttribute('disabled');
+                }
 
-        rowDiv.appendChild(this.Util.createElement('input', {
+                var maxColumns = this.fieldObject.maxColumns;
+                var countColumns = this.fieldObject.forceCountColumns;
+                if (countColumns) {
+                    if (columns >= countColumns) {
+                        this.style.display = 'none';
+                    }
+                    if (columns == countColumns) {
+                        this.fieldObject.addColumn(rows);
+                        if (this.fieldObject.elements.removeColumn) this.fieldObject.elements.removeColumn.style.display = 'none';
+                    }
+                } else if (maxColumns || maxColumns > 0) {
+                    if (columns >= maxColumns) {
+                        this.classList.add('disabled');
+                        this.disabled = true;
+                    }
+                    if (columns <= maxColumns) {
+                        this.fieldObject.addColumn(rows);
+                    }
+                } else {
+                    this.fieldObject.addColumn(rows);
+                }
+            }
+        }
+        if (MODx.config.tvtable_clear_button == 1) {
+            this.elements.clearTable.fieldObject = this;
+            this.elements.header.appendChild(this.elements.clearTable);
+            this.elements.clearTable.onclick = function () {
+                var inputs = this.fieldObject.elements.editor.querySelectorAll('input.tvt-input');
+                inputs.forEach(function(e){e.value = ''});
+                if (MODx.config.tvtable_clear_button == 1) {this.style.display = 'none' }
+                this.fieldObject.change();
+            }
+        }
+    }
+    this.createAddRow = function (disabled) {
+        var addRow = TVTable.createElement('input', {
             type: 'button'
             ,value: '\uf067'
             ,title: _('tvtable.add_row')
-            ,class: 'add-row x-btn x-btn-small tvt-button primary-button'
-        }));
-        
-        rowDiv.appendChild(this.Util.createElement('input', {
+            ,class: 'add-row x-btn x-btn-small tvt-button primary-button' + (disabled ? ' disabled' : '')
+        });
+        addRow.fieldObject = this;
+        addRow.onclick = function() {
+            var row = this.parentNode;
+            var columns = this.fieldObject.columns;
+            var maxRows = this.fieldObject.maxRows;
+            var rows = this.fieldObject.elements.editor.querySelectorAll('.tvt-row');
+
+            if (maxRows > 1) {
+                if (rows.length < maxRows) {
+                    this.fieldObject.addRow(columns, row);
+                    this.fieldObject.change();
+                }
+                if ((rows.length+1) >= maxRows) {
+                    this.fieldObject.elements.editor.querySelectorAll('.add-row').forEach(function(button){
+                        button.classList.add('disabled');
+                        button.setAttribute('disabled', true);
+                    });
+                }
+            } else {
+                this.fieldObject.addRow(columns, row);
+                this.fieldObject.change();
+            }
+        }
+
+        return addRow;
+    }
+    this.createRemoveRow = function () {
+        var removeRow = TVTable.createElement('input', {
             type: 'button'
             ,value: '\uf068'
             ,title: _('tvtable.del_row')
             ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-danger'
-        }));
+        });
+        removeRow.fieldObject = this;
+        removeRow.onclick = function() {
+            var parent = this.parentNode;
+            parent.remove();
+            this.fieldObject.change();
+    
+            var maxRows = this.fieldObject.maxRows;
+            var rows = this.fieldObject.elements.editor.querySelectorAll('.tvt-row');
+    
+            if (maxRows > 1 && rows.length < maxRows) {
+                this.fieldObject.elements.editor.querySelectorAll('.add-row').forEach(function(button){
+                    button.classList.remove('disabled');
+                    button.removeAttribute('disabled');
+                });
+            }
+        }
+
+        return removeRow;
     }
-    ,setEditor: function(field) {
+    this.addRow = function(values, row, disabled) {
+        var rowDiv = TVTable.createElement('div', {type: 'text', class: 'tvt-row'});
+        if (row) {
+            TVTable.insertAfter(rowDiv, row);
+        } else {
+            this.elements.editor.appendChild(rowDiv);
+        }
+        
+        if (typeof values == 'number') {
+            for (var i = 0; i < values; i++) {
+                rowDiv.appendChild(this.createCell(''));
+            }
+        } else {
+            for (var i = 0; i < values.length; i++) {
+                rowDiv.appendChild(this.createCell((values) ? values[i] : ''));
+            }
+        }
+        rowDiv.appendChild(this.createAddRow(disabled));        
+        rowDiv.appendChild(this.createRemoveRow());
+    }
+    this.change = function () {
         var tvtArr = new Array();
-
-        var editor = this.Util.getNextSibling(field);
-        var rows = editor.querySelectorAll('.tvt-row');
-
+        var rows = this.elements.editor.querySelectorAll('.tvt-row');
         for (var x = 0; x < rows.length; x++) {
             var itemsArr = new Array();
             var inputs = rows[x].querySelectorAll('input.tvt-input');
-
             for (var y = 0; y < inputs.length; y++) {
                 var item = inputs[y];
                 itemsArr.push(item.value);
             }
-
             tvtArr.push(itemsArr);
         }
-
-        if (this.Util.checkArray(tvtArr)) {
-            var value = JSON.stringify(tvtArr);
-            field.value = value;
+        this.rows = tvtArr.length;
+        this.columns = tvtArr[0].length;
+        var value;
+        if (TVTable.checkArray(tvtArr)) {
+            this.field.value = value = JSON.stringify(tvtArr);
         } else {
             if (MODx.config.tvtable_clear_button == 1) {
-                var clearBtn = editor.querySelector('.clear-table');
-                clearBtn.style.display = 'none';
+                this.elements.clearTable.style.display = 'none';
             }
-            field.value = '';
+            this.field.value = value = '';
         }
-
-        this.TVs[field.id].value = value;
+        TVTable.TVs[this.id].value = this.value = value;
         MODx.fireResourceFormChange();
     }
-    ,TVs: {}
-    ,Util: {
-        createElement: function (type, attributes) {
-            var element = document.createElement(type);
-            for (key in attributes) {
-                element.setAttribute(key, attributes[key]);
-            }
-
-            return element;
+    this.init = function () {
+        this.field.style.display = 'none';
+        if (this.value[0].length < this.columns) {
+            var diff = this.columns - tvtArr[0].length;
+            tvtArr.forEach(function(column) {
+                for (var i = 0; i < diff; i++) {
+                    column.push('');
+                }
+            });
         }
-        ,checkArray: function(array) {
-            if (!Ext.isArray(array)) return false;
+        this.rows = this.value.length;
+        this.header = this.value[0];
+        this.columns = this.header.length;
+        this.addHeader();
+        for (var row = 1; row < this.rows; row++) {
+            this.addRow(this.value[row], null, (this.rows >= this.maxRows ? true : false));
+        }
+    }
 
-            for (var x = 0; x < array.length; x++) {
-                var value = array[x];
-                if (Ext.isArray(value)) {
-                    for (var y = 0; y < value.length; y++) {
-                        if (value[y] !== '') {
-                            return true;
-                        }
+    this.init();
+    TVTable.TVs[id] = this;
+}
+
+var TVTable = {
+    createElement: function (type, attributes, disabled) {
+        var element = document.createElement(type);
+        for (key in attributes) {
+            element.setAttribute(key, attributes[key]);
+        }
+        if (disabled) { element.setAttribute('disabled', true); }
+
+        return element;
+    }
+    ,checkArray: function(array) {
+        if (!Ext.isArray(array)) return false;
+
+        for (var x = 0; x < array.length; x++) {
+            var value = array[x];
+            if (Ext.isArray(value)) {
+                for (var y = 0; y < value.length; y++) {
+                    if (value[y]) {
+                        return true;
                     }
                 }
+            } else if (value) {
+                return true;
             }
-            
-            return false;
-        }
-        ,insertAfter: function (elem, refElem) {
-            var parent = refElem.parentNode;
-            var next = refElem.nextSibling;
-
-            if (next) {
-                return parent.insertBefore(elem, next);
-            } else {
-                return parent.appendChild(elem);
-            }
-        }
-        ,getPrevSibling: function (elem, selector) {
-            var sibling = elem.previousElementSibling;
-            if (!selector) return sibling;
-            while (sibling) {
-                if (sibling.matches(selector)) return sibling;
-                sibling = sibling.previousElementSibling;
-            }
-        }
-        ,getNextSibling: function (elem, selector) {
-            var sibling = elem.nextElementSibling;
-            if (!selector) return sibling;
-            while (sibling) {
-                if (sibling.matches(selector)) return sibling;
-                sibling = sibling.nextElementSibling
-            }
-        }
-    }
-}
-
-document.onkeyup = function (e) {
-    if (e.target.classList.contains('tvt-input')) {
-        var editor = e.target.closest('.tvtEditor');
-        var field = TVTable.Util.getPrevSibling(editor);
-        
-        if (MODx.config.tvtable_clear_button == 1) {
-            var clearBtn = editor.querySelector('.clear-table');
-            clearBtn.style.display = 'inline-flex';
-        }
-
-        TVTable.setEditor(field);
-    }
-}
-
-document.onclick = function (e) {
-    // Add row
-    if (e.target.classList.contains('add-row')) {
-        var row = e.target.parentNode;
-        var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
-        var length = row.querySelectorAll('input.tvt-input').length;
-    
-        TVTable.addItem(length, row, field);
-        TVTable.setEditor(field);
-    }
-    // Remove row
-    if (e.target.classList.contains('remove-row')) {
-        var parent = e.target.parentNode;
-        var field = TVTable.Util.getPrevSibling(e.target.closest('.tvtEditor'));
-
-        parent.remove();
-        TVTable.setEditor(field);
-    }
-    // Remove column
-    if (e.target.classList.contains('remove-column')) {
-        var editor = e.target.closest('.tvtEditor');
-        var field = TVTable.Util.getPrevSibling(editor);
-        var parent = e.target.parentNode;
-        var length = parent.querySelectorAll('input.tvt-input').length;
-        var rows = editor.querySelectorAll('.tvt-row');
-
-        if (length > 1) {
-            for (var i = 0; i < rows.length; i++) {
-                var row = rows[i];
-                var inputs = row.querySelectorAll('input.tvt-input');
-
-                inputs[inputs.length - 1].remove();
-            }
-            TVTable.setEditor(field);
-        }
-
-        if (length === 2) {
-            e.target.remove();
-        }
-    }
-    // Add column
-    if (e.target.classList.contains('add-column')) {
-        var editor = e.target.closest('.tvtEditor');
-        var field = TVTable.Util.getPrevSibling(editor);
-        var parent = e.target.parentNode;
-        var length = parent.querySelectorAll('input.tvt-input').length;
-        var rows = editor.querySelectorAll('.tvt-row');
-        
-        if (length >= 1 && !parent.querySelectorAll('.remove-column').length) {
-            TVTable.Util.insertAfter(TVTable.Util.createElement('input', {
-                type: 'button'
-                ,value: '\uf053'
-                ,title: _('tvtable.del_column')
-                ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-danger'
-            }), parent.querySelector('.add-row'));
-        }
-
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var inputs = row.querySelectorAll('input.tvt-input');
-
-            TVTable.Util.insertAfter(TVTable.build(''), inputs[inputs.length - 1])
-        }
-        TVTable.setEditor(field);
-    }
-    // Clear table
-    if (e.target.classList.contains('clear-table')) {
-        var editor = e.target.closest('.tvtEditor');
-        var field = TVTable.Util.getPrevSibling(editor);
-        var inputs = editor.querySelectorAll('input.tvt-input');
-
-        inputs.forEach(function(e) {
-            e.value = '';
-        });
-
-        if (MODx.config.tvtable_clear_button == 1) {
-            e.target.style.display = 'none';
         }
         
-        TVTable.setEditor(field);
+        return false;
     }
+    ,insertAfter: function (elem, refElem) {
+        var parent = refElem.parentNode;
+        var next = refElem.nextSibling;
+
+        if (next) {
+            return parent.insertBefore(elem, next);
+        } else {
+            return parent.appendChild(elem);
+        }
+    }
+    ,TVs: {}
 }

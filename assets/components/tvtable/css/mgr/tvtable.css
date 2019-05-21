@@ -17,6 +17,8 @@
 }
 
 .tvt-row {
+    display: flex;
+    align-items: center;
     padding: 5px 5px 5px 0; 
     white-space: nowrap;
 }
@@ -35,6 +37,19 @@
     font-family: FontAwesome;
 }
 
+.tvt-button:disabled,
+.tvt-button.disabled {
+    background-color: #cacaca;
+    background-image: unset;
+}
+
+.tvt-button:disabled:hover,
+.tvt-button.disabled:hover {
+    background-color: #cacaca;
+    background-image: unset;
+    cursor: not-allowed;
+}
+
 .tvt-button:hover,
 .tvt-button:focus {
     box-shadow: none;
@@ -45,12 +60,12 @@
     background-color: #d32f2f;
 }
 
-.tvt-button-danger:hover {
+.tvt-button-danger:not(:disabled):not(.disabled):hover {
     background-color: #c62828;
     box-shadow: none;
 }
 
-.tvt-button-danger:focus {
+.tvt-button-danger:not(:disabled):not(.disabled):focus {
     background-color: #b71c1c;
 }
 
@@ -59,10 +74,10 @@
     background-color: #ffa000;
 }
 
-.tvt-button-warning:hover {
+.tvt-button-warning:not(:disabled):not(.disabled):hover {
     background-color: #ff8f00;
 }
 
-.tvt-button-warning:focus {
+.tvt-button-warning:not(:disabled):not(.disabled):focus {
     background-color: #ff6f00;
 }
