@@ -216,7 +216,7 @@ function TableTV (id) {
         return removeRow;
     }
     this.addRow = function(values, row, disabled) {
-        var rowDiv = TVTable.createElement('div', {type: 'text', class: 'tvt-row'});
+        var rowDiv = TVTable.createElement('div', {class: 'tvt-row'});
         if (row) {
             TVTable.insertAfter(rowDiv, row);
         } else {
