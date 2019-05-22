@@ -1,6 +1,7 @@
 function TableTV (id) {
     this.id = id;
     this.field = document.getElementById(id);
+    this.width = this.field.dataset.width;
     this.forceCountRows = this.field.dataset.rows;
     this.forceCountColumns = this.field.dataset.columns;
     this.maxColumns = this.field.dataset.maxColumns;
@@ -71,7 +72,12 @@ function TableTV (id) {
             var deleteColumn = TVTable.createElement('span', {class: 'tvt-delete-column'});
             deleteColumn.fieldObject = this;
             deleteColumn.dataset['columnIndex'] = index;
-            deleteColumn.innerText = _('tvtable.del_column');
+            if (this.width > 120) {
+                deleteColumn.innerText = _('tvtable.del_column');
+            } else {
+                deleteColumn.appendChild(TVTable.createElement('i', {class: 'icon icon-times'}));
+            }
+            deleteColumn.setAttribute('title', _('tvtable.del_column'));
             deleteColumn.onclick = function() {
                 this.fieldObject.removeColumn(this.dataset.columnIndex);
                 var buttons = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-delete-column');
@@ -83,16 +89,18 @@ function TableTV (id) {
                     var headerElements = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-headers');
                     for (var i = 0; i < columns.length; i++) {
                         headerElements[i].innerText = this.fieldObject.headers[i] || '';
+                        headerElements[i].setAttribute('title', this.fieldObject.headers[i] || '');
                     }
                 }
             }
             if (Ext.isArray(this.headers)) {
-                var header = TVTable.createElement('span', {class: 'tvt-headers'});
+                var header = TVTable.createElement('span', {class: 'tvt-headers', title: this.headers[index] || ''});
                 header.innerText = this.headers[index] || '';
                 wrapper.appendChild(header);
             }
             wrapper.appendChild(deleteColumn);
         }
+        if (this.width) cell.style.width = this.width + 'px';
         wrapper.appendChild(cell);
         return wrapper;
     }
