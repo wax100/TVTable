@@ -6,3 +6,5 @@ $_lang['tvtable.max_columns'] = 'Maximum number of columns';
 $_lang['tvtable.max_columns_desc'] = 'Existing values will not be changed.</em>';
 $_lang['tvtable.max_rows'] = 'Maximum number of rows';
 $_lang['tvtable.max_rows_desc'] = 'Existing values will not be changed.</em>';
+$_lang['tvtable.headers'] = 'Column headings';
+$_lang['tvtable.headers_desc'] = 'List of column headings (separator ||, Example: Name||Price)';
