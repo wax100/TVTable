@@ -2,6 +2,8 @@
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
+    padding-top: 20px;
+    padding-right: 20px;
 }
 
 .tvt-input { 
@@ -16,15 +18,39 @@
     border-color: #2d86b7;
 }
 
+.tvt-input-wrapper {
+    position: relative;
+    padding: 5px 0;
+}
+
+.delete-column {
+    position: absolute;
+    display: none;
+    padding: 4px 0;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0ee;
+    font-size: 10px;
+    text-align: center;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    cursor: pointer;
+}
+
 .tvt-row {
     display: flex;
     align-items: center;
-    padding: 5px 5px 5px 0; 
+    padding-right: 5px; 
     white-space: nowrap;
 }
 
 .tvt-header {
     background: #f0f0ee;
+}
+
+.tvt-header:not(.locked) .tvt-input-wrapper:hover .delete-column {
+    display: block;
 }
 
 .tvt-button {

@@ -31,12 +31,16 @@ function TableTV (id) {
     this.addColumn = function(rows) {
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i];
-            var inputs = row.querySelectorAll('input.tvt-input');
-            TVTable.insertAfter(this.createCell(), inputs[inputs.length - 1])
+            var inputs = row.querySelectorAll('.tvt-input-wrapper');
+            if (i == 0) {
+                TVTable.insertAfter(this.createCell('', true, inputs.length), inputs[inputs.length - 1]);
+            } else {
+                TVTable.insertAfter(this.createCell(), inputs[inputs.length - 1]);
+            }
         }
         this.change();
     }
-    this.createCell = function (value) {
+    this.createCell = function (value, isHeader, index) {
         var wrapper = TVTable.createElement('span', {class: 'tvt-input-wrapper'});
         var cell = TVTable.createElement('input', {
             type: 'text'
@@ -51,13 +55,68 @@ function TableTV (id) {
             }
             this.fieldObject.change();
         }
+        if (isHeader) {
+            var deleteColumn = TVTable.createElement('span', {class: 'delete-column'});
+            deleteColumn.fieldObject = this;
+            deleteColumn.dataset['columnIndex'] = index;
+            deleteColumn.innerText = _('tvtable.del_column');
+            deleteColumn.onclick = function() {
+                this.fieldObject.removeColumn(this.dataset.columnIndex);
+                var buttons = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .delete-column');
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].dataset.columnIndex = i;
+                }
+            }
+            wrapper.appendChild(deleteColumn);
+        }
         wrapper.appendChild(cell);
         return wrapper;
+    }
+    this.removeColumn = function(index) {
+        var columns = this.elements.header.querySelectorAll('input.tvt-input').length;
+        var rows = this.elements.editor.querySelectorAll('.tvt-row');
+
+        if (columns > 1) {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var inputs = row.querySelectorAll('.tvt-input-wrapper');
+
+                if (index) {
+                    inputs[index].remove();
+                } else {
+                    inputs[inputs.length - 1].remove();
+                }
+            }
+            this.change();
+            columns--;
+        }
+
+        if (columns === 1) {
+            this.elements.removeColumn.classList.add('disabled');
+            this.elements.removeColumn.setAttribute('disabled', true);
+            this.elements.header.classList.add('locked');
+        }
+
+        var maxColumns = this.maxColumns;
+        var countColumns = this.forceCountColumns;
+
+        if (countColumns) {
+            if (columns <= countColumns) {
+                this.elements.removeColumn.style.display = 'none';
+                this.elements.header.classList.add('locked');
+            }
+            if (columns == countColumns) {
+                if (this.elements.addColumn) this.elements.addColumn.style.display = 'none';
+            }
+        } else if (maxColumns >= 1 && columns < maxColumns) {
+            this.elements.addColumn.classList.remove('disabled');
+            this.elements.addColumn.disabled = false;
+        }
     }
     this.addHeader = function() {
         this.elements.editor.appendChild(this.elements.header);
         for (var i = 0; i < this.columns; i++) {
-            this.elements.header.appendChild(this.createCell(this.header[i]));
+            this.elements.header.appendChild(this.createCell(this.header[i], true, i));
         }
         this.elements.header.appendChild(this.createAddRow((this.rows >= this.maxRows ? true : false)));
 
@@ -68,41 +127,13 @@ function TableTV (id) {
             if (this.columns < 2) {
                 this.elements.removeColumn.classList.add('disabled');
                 this.elements.removeColumn.setAttribute('disabled', true);
+                this.elements.header.classList.add('locked');
             }
-            this.elements.removeColumn.onclick = function () {
-                var columns = this.fieldObject.elements.header.querySelectorAll('input.tvt-input').length;
-                var rows = this.fieldObject.elements.editor.querySelectorAll('.tvt-row');
-
-                if (columns > 1) {
-                    for (var i = 0; i < rows.length; i++) {
-                        var row = rows[i];
-                        var inputs = row.querySelectorAll('input.tvt-input');
-                        inputs[inputs.length - 1].remove();
-                    }
-                    this.fieldObject.change();
-                    columns--;
-                }
-
-                if (columns === 1) {
-                    this.classList.add('disabled');
-                    this.setAttribute('disabled', true);
-                }
-
-                var maxColumns = this.fieldObject.maxColumns;
-                var countColumns = this.fieldObject.forceCountColumns;
-
-                if (countColumns) {
-                    if (columns <= countColumns) {
-                        this.style.display = 'none';
-                    }
-                    if (columns == countColumns) {
-                        if (this.fieldObject.elements.addColumn) this.fieldObject.elements.addColumn.style.display = 'none';
-                    }
-                } else if (maxColumns >= 1 && columns < maxColumns) {
-                    this.fieldObject.elements.addColumn.classList.remove('disabled');
-                    this.fieldObject.elements.addColumn.disabled = false;
-                }
-            }
+            this.elements.removeColumn.onclick = function() {
+                this.fieldObject.removeColumn();
+            };
+        } else {
+            this.elements.header.classList.add('locked');
         }
         if (columnsNotLimited || typeof this.forceCountColumns !== 'undefined' && this.columns < this.forceCountColumns || typeof this.forceCountColumns === 'undefined' && typeof this.maxColumns !== 'undefined' && this.maxColumns > 1) {
             this.elements.addColumn.fieldObject = this;
@@ -117,6 +148,7 @@ function TableTV (id) {
                 if (columns > 1 && this.fieldObject.elements.removeColumn.classList.contains('disabled')) {
                     this.fieldObject.elements.removeColumn.classList.remove('disabled');
                     this.fieldObject.elements.removeColumn.removeAttribute('disabled');
+                    this.fieldObject.elements.header.classList.remove('locked');
                 }
 
                 var maxColumns = this.fieldObject.maxColumns;
@@ -127,7 +159,8 @@ function TableTV (id) {
                     }
                     if (columns == countColumns) {
                         this.fieldObject.addColumn(rows);
-                        if (this.fieldObject.elements.removeColumn) this.fieldObject.elements.removeColumn.style.display = 'none';
+                        if (this.fieldObject.elements.removeColumn) this.fieldObject.elements.removeColumn.remove();
+                        this.fieldObject.elements.editor.querySelectorAll('.delete-column').remove();
                     }
                 } else if (maxColumns || maxColumns > 0) {
                     if (columns >= maxColumns) {
@@ -260,6 +293,7 @@ function TableTV (id) {
             }
             this.field.value = value = '';
         }
+        this.header = tvtArr[0];
         TVTable.TVs[this.id].value = this.value = value;
         MODx.fireResourceFormChange();
     }
