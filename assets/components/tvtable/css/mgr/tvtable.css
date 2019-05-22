@@ -10,7 +10,7 @@
     width: 200px; 
     max-width: 200px;
     height: 20px;
-    margin-left: 5px;
+    padding: 4px;
     transition: none;
 }
 
@@ -19,23 +19,37 @@
 }
 
 .tvt-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: relative;
-    padding: 5px 0;
 }
 
-.delete-column {
+.tvt-input-wrapper+.tvt-input-wrapper {
+    margin-left: 5px;
+}
+
+.tvt-headers {
+    font-size: 11px;
+}
+
+.tvt-headers,
+.tvt-delete-column {
     position: absolute;
-    display: none;
     padding: 4px 0;
     bottom: 100%;
     left: 0;
     width: 100%;
-    background-color: #f0f0ee;
-    font-size: 10px;
+    font-size: 11px;
     text-align: center;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     cursor: pointer;
+}
+
+.tvt-delete-column {
+    display: none;
+    background-color: #f0f0ee;
 }
 
 .tvt-row {
@@ -45,11 +59,18 @@
     white-space: nowrap;
 }
 
-.tvt-header {
-    background: #f0f0ee;
+.tvt-row+.tvt-row {
+    margin-top: 5px;
 }
 
-.tvt-header:not(.locked) .tvt-input-wrapper:hover .delete-column {
+.tvt-header {
+    align-items: flex-end;
+    background: #f0f0ee;
+    padding: 5px;
+    margin-left: -5px;
+}
+
+.tvt-header:not(.locked) .tvt-input-wrapper:hover .tvt-delete-column {
     display: block;
 }
 

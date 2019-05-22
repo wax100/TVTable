@@ -4,6 +4,7 @@ function TableTV (id) {
     this.forceCountColumns = this.field.dataset.columns;
     this.maxColumns = this.field.dataset.maxColumns;
     this.maxRows = this.field.dataset.maxRows;
+    this.headers = this.field.dataset.headers ? this.field.dataset.headers.split('||') : '';
     this.value = this.field.value ? Ext.util.JSON.decode(this.field.value) : new Array(Array.from({length: this.columns || this.forceCountColumns || 1}));
     this.elements = {
         editor: TVTable.insertAfter(TVTable.createElement('div', {class: 'tvtEditor'}), this.field),
@@ -56,16 +57,28 @@ function TableTV (id) {
             this.fieldObject.change();
         }
         if (isHeader) {
-            var deleteColumn = TVTable.createElement('span', {class: 'delete-column'});
+            var deleteColumn = TVTable.createElement('span', {class: 'tvt-delete-column'});
             deleteColumn.fieldObject = this;
             deleteColumn.dataset['columnIndex'] = index;
             deleteColumn.innerText = _('tvtable.del_column');
             deleteColumn.onclick = function() {
                 this.fieldObject.removeColumn(this.dataset.columnIndex);
-                var buttons = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .delete-column');
+                var buttons = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-delete-column');
                 for (var i = 0; i < buttons.length; i++) {
                     buttons[i].dataset.columnIndex = i;
                 }
+                if (Ext.isArray(this.fieldObject.headers)) {
+                    var columns = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-input-wrapper');
+                    var headerElements = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-headers');
+                    for (var i = 0; i < columns.length; i++) {
+                        headerElements[i].innerText = this.fieldObject.headers[i] || '';
+                    }
+                }
+            }
+            if (Ext.isArray(this.headers)) {
+                var header = TVTable.createElement('span', {class: 'tvt-headers'});
+                header.innerText = this.headers[index] || '';
+                wrapper.appendChild(header);
             }
             wrapper.appendChild(deleteColumn);
         }
@@ -160,7 +173,7 @@ function TableTV (id) {
                     if (columns == countColumns) {
                         this.fieldObject.addColumn(rows);
                         if (this.fieldObject.elements.removeColumn) this.fieldObject.elements.removeColumn.remove();
-                        this.fieldObject.elements.editor.querySelectorAll('.delete-column').remove();
+                        this.fieldObject.elements.editor.querySelectorAll('.tvt-delete-column').remove();
                     }
                 } else if (maxColumns || maxColumns > 0) {
                     if (columns >= maxColumns) {

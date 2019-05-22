@@ -20,6 +20,21 @@ MODx.load({
     }
     ,labelAlign: 'top'
     ,items: [{
+        xtype: 'textfield'
+        ,fieldLabel: '{/literal}{$tvt.headers}{literal}'
+        ,description: MODx.expandHelp ? '' : '{/literal}{$tvt.headers_desc}{literal}'
+        ,name: 'inopt_headers'
+        ,hiddenName: 'inopt_headers'
+        ,id: 'inopt_headers{/literal}{$tv}{literal}'
+        ,value: params['headers']
+        ,width: 200
+        ,listeners: oc
+    },{
+        xtype: MODx.expandHelp ? 'label' : 'hidden'
+        ,forId: 'inopt_headers{/literal}{$tv}{literal}'
+        ,html: '{/literal}{$tvt.headers_desc}{literal}'
+        ,cls: 'desc-under'
+    },{
         xtype: 'numberfield'
         ,minValue: 1
         ,fieldLabel: '{/literal}{$tvt.columns}{literal}'
