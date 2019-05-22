@@ -1,6 +1,7 @@
 <?php
 
 $_lang['tvtable'] = 'TVTable';
+$_lang['table'] = 'Table';
 $_lang['tvtable.add_column'] = 'Добавить столбец';
 $_lang['tvtable.del_column'] = 'Удалить столбец';
 $_lang['tvtable.add_row'] = 'Добавить строку';
