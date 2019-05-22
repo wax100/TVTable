@@ -1,5 +1,9 @@
 Changelog for TVTable.
 
+3.3.1-beta
+==============
+- Fixed remove column button label
+
 3.3.0-beta
 ==============
 - Added rows count property
