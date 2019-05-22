@@ -1,5 +1,11 @@
 Changelog for TVTable.
 
+3.3.0-beta
+==============
+- Added rows count property
+- Added headers property
+- Added cell width property
+
 3.2.0-beta
 ==============
 - Rewrited main script [JS]
