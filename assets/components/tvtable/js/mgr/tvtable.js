@@ -1,11 +1,22 @@
 function TableTV (id) {
     this.id = id;
     this.field = document.getElementById(id);
+    this.forceCountRows = this.field.dataset.rows;
     this.forceCountColumns = this.field.dataset.columns;
     this.maxColumns = this.field.dataset.maxColumns;
     this.maxRows = this.field.dataset.maxRows;
     this.headers = this.field.dataset.headers ? this.field.dataset.headers.split('||') : '';
-    this.value = this.field.value ? Ext.util.JSON.decode(this.field.value) : new Array(Array.from({length: this.columns || this.forceCountColumns || 1}));
+    if (this.field.value) {
+        this.value = Ext.util.JSON.decode(this.field.value);
+    } else {
+        var value = Array.from({length: this.rows || this.forceCountRows || 1}); // rows
+        if (value && value.length > 0) {
+            for (var i = 0; i < value.length; i++) {
+                value[i] = Array.from({length: this.columns || this.forceCountColumns || 1});
+            }
+        }
+        this.value = value;
+    }
     this.elements = {
         editor: TVTable.insertAfter(TVTable.createElement('div', {class: 'tvtEditor'}), this.field),
         addColumn: TVTable.createElement('input', {
@@ -131,7 +142,10 @@ function TableTV (id) {
         for (var i = 0; i < this.columns; i++) {
             this.elements.header.appendChild(this.createCell(this.header[i], true, i));
         }
-        this.elements.header.appendChild(this.createAddRow((this.rows >= this.maxRows ? true : false)));
+        var rowsNotLimited = !this.forceCountRows && !this.maxRows;
+        if (rowsNotLimited || typeof this.forceCountRows !== 'undefined' && this.rows < this.forceCountRows || typeof this.forceCountRows === 'undefined' && typeof this.maxRows !== 'undefined' && this.maxRows > this.rows) {
+            this.elements.header.appendChild(this.createAddRow((this.rows >= this.maxRows ? true : false)));
+        }
 
         var columnsNotLimited = !this.forceCountColumns && !this.maxColumns;
         if (columnsNotLimited || typeof this.forceCountColumns !== 'undefined' && this.columns > this.forceCountColumns || typeof this.forceCountColumns === 'undefined' && typeof this.maxColumns !== 'undefined') {
@@ -259,11 +273,17 @@ function TableTV (id) {
                     button.removeAttribute('disabled');
                 });
             }
+
+            if (typeof this.fieldObject.forceCountRows !== 'undefined' && rows.length <= this.fieldObject.forceCountRows) {
+                this.fieldObject.elements.editor.querySelectorAll('.remove-row').forEach(function(button){
+                    button.remove();
+                });
+            }
         }
 
         return removeRow;
     }
-    this.addRow = function(values, row, disabled) {
+    this.addRow = function(values, row, disabled, withoutAddButton, withoutRemoveButton) {
         var rowDiv = TVTable.createElement('div', {class: 'tvt-row'});
         if (row) {
             TVTable.insertAfter(rowDiv, row);
@@ -280,8 +300,8 @@ function TableTV (id) {
                 rowDiv.appendChild(this.createCell(values[i]));
             }
         }
-        rowDiv.appendChild(this.createAddRow(disabled));        
-        rowDiv.appendChild(this.createRemoveRow());
+        if (!withoutAddButton) rowDiv.appendChild(this.createAddRow(disabled));
+        if (!withoutRemoveButton) rowDiv.appendChild(this.createRemoveRow());
     }
     this.change = function () {
         var tvtArr = new Array();
@@ -313,20 +333,30 @@ function TableTV (id) {
     this.init = function () {
         this.field.style.display = 'none';
         this.columns = this.value[0].length;
+        this.rows = this.value.length;
         if (typeof this.forceCountColumns !== 'undefined' && this.columns < this.forceCountColumns) {
-            var diff = this.forceCountColumns - this.columns;
+            var columnDiff = this.forceCountColumns - this.columns;
             this.value.forEach(function(column) {
-                for (var i = 0; i < diff; i++) {
+                for (var i = 0; i < columnDiff; i++) {
                     column.push('');
                 }
             });
-            this.columns = this.columns + diff;
+            this.columns = this.columns + columnDiff;
+        }
+        if (typeof this.forceCountRows !== 'undefined' && this.rows < this.forceCountRows) {
+            var rowDiff = this.forceCountRows - this.rows;
+            for (var i = 0; i < rowDiff; i++) {
+                this.value.push(Array.from({length: this.columns}));
+            }
+            this.rows = this.rows + rowDiff;
         }
         this.header = this.value[0];
-        this.rows = this.value.length;
         this.addHeader();
+        var withoutAddButton = (typeof this.forceCountRows !== 'undefined' && this.rows >= this.forceCountRows) ? true : false;
+        var withoutRemoveButton = (typeof this.forceCountRows !== 'undefined' && this.rows <= this.forceCountRows) ? true : false;
+        var disabled = this.rows >= this.maxRows ? true : false;
         for (var row = 1; row < this.rows; row++) {
-            this.addRow(this.value[row], null, (this.rows >= this.maxRows ? true : false));
+            this.addRow(this.value[row], null, disabled, withoutAddButton, withoutRemoveButton);
         }
     }
 

@@ -2,6 +2,7 @@
 {if $params.maxColumns!=''}data-max-columns="{$params.maxColumns}"{/if}
 {if $params.maxRows!=''}data-max-rows="{$params.maxRows}"{/if}
 {if $params.columns!=''}data-columns="{$params.columns}"{/if}
+{if $params.rows!=''}data-rows="{$params.rows}"{/if}
 {if $params.headers!=''}data-headers="{$params.headers}"{/if}
 /> 
 <script type="text/javascript">  

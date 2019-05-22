@@ -53,6 +53,22 @@ MODx.load({
     },{
         xtype: 'numberfield'
         ,minValue: 1
+        ,fieldLabel: '{/literal}{$tvt.rows}{literal}'
+        ,description: MODx.expandHelp ? '' : '{/literal}{$tvt.rows_desc}{literal}'
+        ,name: 'inopt_rows'
+        ,hiddenName: 'inopt_rows'
+        ,id: 'inopt_rows{/literal}{$tv}{literal}'
+        ,value: params['rows']
+        ,width: 200
+        ,listeners: oc
+    },{
+        xtype: MODx.expandHelp ? 'label' : 'hidden'
+        ,forId: 'inopt_rows{/literal}{$tv}{literal}'
+        ,html: '{/literal}{$tvt.rows_desc}{literal}'
+        ,cls: 'desc-under'
+    },{
+        xtype: 'numberfield'
+        ,minValue: 1
         ,fieldLabel: '{/literal}{$tvt.max_columns}{literal}'
         ,description: MODx.expandHelp ? '' : '{/literal}{$tvt.max_columns_desc}{literal}'
         ,name: 'inopt_maxColumns'
