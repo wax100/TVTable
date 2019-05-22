@@ -72,7 +72,7 @@ function TableTV (id) {
             var deleteColumn = TVTable.createElement('span', {class: 'tvt-delete-column'});
             deleteColumn.fieldObject = this;
             deleteColumn.dataset['columnIndex'] = index;
-            if (this.width > 120) {
+            if (typeof this.width === 'undefined' || this.width > 120) {
                 deleteColumn.innerText = _('tvtable.del_column');
             } else {
                 deleteColumn.appendChild(TVTable.createElement('i', {class: 'icon icon-times'}));
