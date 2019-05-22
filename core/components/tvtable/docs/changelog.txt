@@ -1,5 +1,13 @@
 Changelog for TVTable.
 
+3.2.0-beta
+==============
+- Rewrited main script [JS]
+- Added columns count, max columns and max rows properties
+- Added ability to delete specific columns
+- Added confirm dialog window before clearing table
+- Fix bug when value is empty [Snippet]
+
 3.1.1-beta
 ==============
 - Fix the bug when typing on other inputs [JS]
