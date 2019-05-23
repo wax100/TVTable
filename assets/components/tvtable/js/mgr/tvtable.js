@@ -18,27 +18,27 @@ function TableTV (id) {
         }
         this.value = value;
     }
+    var addColumnElement = TVTable.createElement('button', {
+        title: _('tvtable.add_column')
+        ,class: 'add-column x-btn x-btn-small tvt-button primary-button'
+    });
+    addColumnElement.appendChild(TVTable.createElement('i', {class: 'icon icon-chevron-right'}));
+    var removeColumnElement = TVTable.createElement('button', {
+        title: _('tvtable.del_column')
+        ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-danger'
+    });
+    removeColumnElement.appendChild(TVTable.createElement('i', {class: 'icon icon-chevron-left'}));
+    var clearTableElement = TVTable.createElement('button', {
+        title: _('tvtable.clear_table')
+        ,class: 'clear-table x-btn x-btn-small tvt-button tvt-button-warning'
+        ,style: TVTable.checkArray(this.value) ? 'display: inline-flex;' : 'display: none;'
+    });
+    clearTableElement.appendChild(TVTable.createElement('i', {class: 'icon icon-refresh'}));
     this.elements = {
         editor: TVTable.insertAfter(TVTable.createElement('div', {class: 'tvtEditor'}), this.field),
-        addColumn: TVTable.createElement('input', {
-            type: 'button'
-            ,value: '\uF054'
-            ,title: _('tvtable.add_column')
-            ,class: 'add-column x-btn x-btn-small tvt-button primary-button'
-        }),
-        removeColumn: TVTable.createElement('input', {
-            type: 'button'
-            ,value: '\uf053'
-            ,title: _('tvtable.del_column')
-            ,class: 'remove-column x-btn x-btn-small tvt-button tvt-button-danger'
-        }),
-        clearTable: TVTable.createElement('input', {
-            type: 'button'
-            ,value: '\uf021'
-            ,title: _('tvtable.clear_table')
-            ,class: 'clear-table x-btn x-btn-small tvt-button tvt-button-warning'
-            ,style: TVTable.checkArray(this.value) ? 'display: inline-flex;' : 'display: none;'
-        }),
+        addColumn: addColumnElement,
+        removeColumn: removeColumnElement,
+        clearTable: clearTableElement,
         header: TVTable.createElement('div', {class: 'tvt-row tvt-header'}),
     }
     this.addColumn = function(rows) {
@@ -75,9 +75,10 @@ function TableTV (id) {
             if (typeof this.width === 'undefined' || this.width > 120) {
                 deleteColumn.innerText = _('tvtable.del_column');
             } else {
-                deleteColumn.appendChild(TVTable.createElement('i', {class: 'icon icon-times'}));
+                deleteColumn.classList.add('tvt-delete-column-sm');
+                deleteColumn.innerText = '\u2716';
+                deleteColumn.setAttribute('title', _('tvtable.del_column'));
             }
-            deleteColumn.setAttribute('title', _('tvtable.del_column'));
             deleteColumn.onclick = function() {
                 this.fieldObject.removeColumn(this.dataset.columnIndex);
                 var buttons = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-delete-column');
@@ -227,12 +228,13 @@ function TableTV (id) {
         }
     }
     this.createAddRow = function (disabled) {
-        var addRow = TVTable.createElement('input', {
-            type: 'button'
-            ,value: '\uf067'
-            ,title: _('tvtable.add_row')
+        var addRow = TVTable.createElement('button', {
+            title: _('tvtable.add_row')
             ,class: 'add-row x-btn x-btn-small tvt-button primary-button' + (disabled ? ' disabled' : '')
         });
+        addRow.appendChild(TVTable.createElement('i', {
+            class: 'icon icon-plus'
+        }));
         addRow.fieldObject = this;
         addRow.onclick = function() {
             var row = this.parentNode;
@@ -260,12 +262,13 @@ function TableTV (id) {
         return addRow;
     }
     this.createRemoveRow = function () {
-        var removeRow = TVTable.createElement('input', {
-            type: 'button'
-            ,value: '\uf068'
-            ,title: _('tvtable.del_row')
+        var removeRow = TVTable.createElement('button', {
+            title: _('tvtable.del_row')
             ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-danger'
         });
+        removeRow.appendChild(TVTable.createElement('i', {
+            class: 'icon icon-minus'
+        }));
         removeRow.fieldObject = this;
         removeRow.onclick = function() {
             var parent = this.parentNode;

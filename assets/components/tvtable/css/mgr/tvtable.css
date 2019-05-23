@@ -31,27 +31,76 @@
 }
 
 .tvt-headers {
-    font-size: 11px;
     overflow: hidden;
+}
+
+.tvt-headers::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, white);
 }
 
 .tvt-headers,
 .tvt-delete-column {
     position: absolute;
-    padding: 4px 0;
+    padding: 6px 0;
     bottom: 100%;
     left: 0;
     width: 100%;
     font-size: 11px;
     text-align: center;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
     cursor: pointer;
 }
 
 .tvt-delete-column {
     display: none;
     background-color: #f0f0ee;
+    border-bottom: 5px solid #f0f0ee;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 2px 0;
+    color: #666;
+    left: 0;
+    width: 100%;
+    box-shadow: inset 0px -7px 16px -12px rgba(0,0,0,.3);
+}
+
+.tvt-delete-column:not(.tvt-delete-column-sm)::after,
+.tvt-delete-column:not(.tvt-delete-column-sm)::before {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: calc(100% + 10px);
+    background-color: white;
+    top: -5px;
+}
+
+.tvt-delete-column:not(.tvt-delete-column-sm)::before {
+    right: calc(100% - 11px);
+    transform: rotate(28deg);
+    transform-origin: top left;
+    border-bottom-right-radius: 18px;
+}
+
+.tvt-delete-column:not(.tvt-delete-column-sm)::after {
+    left: calc(100% - 11px);
+    transform: rotate(-28deg);
+    transform-origin: top right;
+    border-bottom-left-radius: 18px;
+}
+
+.tvt-delete-column:hover {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.tvt-delete-column:active {
+    background-color: #c62828;
+    color: white;
 }
 
 .tvt-row {
@@ -72,6 +121,21 @@
     margin-left: -5px;
 }
 
+.tvt-header .tvt-input-wrapper {
+    position: relative;
+}
+
+.tvt-header .tvt-input-wrapper::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    width: calc(100% + 20px);
+    bottom: 100%;
+    height: 5px;
+    background-color: #f0f0ee;
+    z-index: 1;
+}
+
 .tvt-header:not(.locked) .tvt-input-wrapper:hover .tvt-delete-column {
     display: block;
 }
@@ -82,8 +146,9 @@
     justify-content: center;
     width: 30px;
     height: 30px;
+    font-size: 10px;
+    margin: 0;
     margin-left: 5px;
-    font-family: FontAwesome;
 }
 
 .tvt-button:disabled,
