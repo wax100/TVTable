@@ -13,3 +13,5 @@ $_lang['tvtable.rows_desc'] = '<em>Note: Has priority over the <strong>Maximum n
 $_lang['tvtable.customization'] = 'Customization';
 $_lang['tvtable.width'] = 'Field width in pixels';
 $_lang['tvtable.width_desc'] = 'Minimum value: 20';
+$_lang['tvtable.drag'] = 'Drag and Drop row sorting';
+$_lang['tvtable.drag_desc'] = 'Enable the ability to sort the rows by dragging';

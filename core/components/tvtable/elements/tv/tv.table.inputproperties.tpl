@@ -147,6 +147,21 @@ MODx.load({
                         ,forId: 'inopt_width{/literal}{$tv}{literal}'
                         ,html: '{/literal}{$tvt.width_desc}{literal}'
                         ,cls: 'desc-under'
+                    },{
+                        xtype: 'combo-boolean'
+                        ,fieldLabel: '{/literal}{$tvt.drag}{literal}'
+                        ,description: MODx.expandHelp ? '' : '{/literal}{$tvt.drag_desc}{literal}'
+                        ,name: 'inopt_drag'
+                        ,hiddenName: 'inopt_drag'
+                        ,id: 'inopt_drag{/literal}{$tv}{literal}'
+                        ,value: params['drag'] || 0
+                        ,anchor: '100%'
+                        ,listeners: oc
+                    },{
+                        xtype: MODx.expandHelp ? 'label' : 'hidden'
+                        ,forId: 'inopt_drag{/literal}{$tv}{literal}'
+                        ,html: '{/literal}{$tvt.drag_desc}{literal}'
+                        ,cls: 'desc-under'
                     }]
                 }]
             }]

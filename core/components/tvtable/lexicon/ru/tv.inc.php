@@ -13,3 +13,5 @@ $_lang['tvtable.rows_desc'] = '<em>Примечание: Имеет приори
 $_lang['tvtable.customization'] = 'Кастомизация';
 $_lang['tvtable.width'] = 'Ширина полей в пикселях';
 $_lang['tvtable.width_desc'] = 'Минимальное значение: 20';
+$_lang['tvtable.drag'] = 'Сортировка строк';
+$_lang['tvtable.drag_desc'] = 'Включить возможность сортировать строки с помощью перетаскивания';

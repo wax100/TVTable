@@ -1,6 +1,7 @@
 function TableTV (id) {
     this.id = id;
     this.field = document.getElementById(id);
+    this.drag = this.field.dataset.drag || false;
     this.width = this.field.dataset.width;
     this.forceCountRows = this.field.dataset.rows;
     this.forceCountColumns = this.field.dataset.columns;
@@ -34,12 +35,34 @@ function TableTV (id) {
         ,style: TVTable.checkArray(this.value) ? 'display: inline-flex;' : 'display: none;'
     });
     clearTableElement.appendChild(TVTable.createElement('i', {class: 'icon icon-refresh'}));
+    var editor = TVTable.insertAfter(TVTable.createElement('div', {class: 'tvtEditor'}), this.field);
+    if (this.drag) { editor.classList.add('drag') }
     this.elements = {
-        editor: TVTable.insertAfter(TVTable.createElement('div', {class: 'tvtEditor'}), this.field),
+        editor: editor,
         addColumn: addColumnElement,
         removeColumn: removeColumnElement,
         clearTable: clearTableElement,
         header: TVTable.createElement('div', {class: 'tvt-row tvt-header'}),
+    }
+    this.Drag = {
+        handleDrag: function(item) {
+            var selectedItem = item.target.closest('.tvt-row'),
+                list = selectedItem.parentNode,
+                x = event.clientX,
+                y = event.clientY;
+
+            selectedItem.classList.add('drag-active');
+            var swapItem = (document.elementFromPoint(x, y).classList.contains('tvt-row') ? document.elementFromPoint(x, y) : document.elementFromPoint(x, y).closest('.tvt-row')) || selectedItem;
+
+            if (list === swapItem.closest('.tvtEditor') && !swapItem.closest('.tvt-row').classList.contains('tvt-header')) {
+                swapItem = swapItem !== selectedItem.nextSibling ? swapItem.closest('.tvt-row') : swapItem.closest('.tvt-row').nextSibling;
+                list.insertBefore(selectedItem, swapItem);
+                this.fieldObject.change();
+            }
+        },
+        handleDrop: function(item) {
+            item.target.closest('.tvt-row').classList.remove('drag-active');
+        }
     }
     this.addColumn = function(rows) {
         for (var i = 0; i < rows.length; i++) {
@@ -296,6 +319,20 @@ function TableTV (id) {
     }
     this.addRow = function(values, row, disabled, withoutAddButton, withoutRemoveButton) {
         var rowDiv = TVTable.createElement('div', {class: 'tvt-row'});
+        if (this.drag) {
+            var handle = TVTable.createElement('span', {class: 'tvt-handle'});
+            for (var i = 0; i < 3; i++) {
+                var handleDot = TVTable.createElement('span', {class: 'tvt-handle-dot'});
+                handleDot.innerText = '..';
+                handle.appendChild(handleDot);
+            }
+            handle.ondrag = this.Drag.handleDrag;
+            handle.ondragend = this.Drag.handleDrop;
+            handle.setAttribute('draggable', true);
+            handle.fieldObject = this;
+            rowDiv.appendChild(handle);
+        }
+
         if (row) {
             TVTable.insertAfter(rowDiv, row);
         } else {

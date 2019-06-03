@@ -1,4 +1,4 @@
-.tvtEditor { 
+.tvtEditor {
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
@@ -6,7 +6,7 @@
     padding-right: 20px;
 }
 
-.tvt-input { 
+.tvt-input {
     min-width: 20px;
     width: 200px; 
     max-width: 200px;
@@ -104,12 +104,48 @@
 .tvt-row {
     display: flex;
     align-items: center;
-    padding-right: 5px; 
+    padding-right: 5px;
     white-space: nowrap;
 }
 
+.tvt-row.drag-active {
+    opacity: .3;
+}
+
+.tvtEditor.drag .tvt-row {
+    position: relative;
+}
+
+.tvt-handle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 10px;
+    height: 30px;
+    color: #000;
+    cursor: move;
+    padding-left: 2px;
+    margin-right: 3px;
+    text-shadow: 0 0 0 black;
+    user-select: none;
+    white-space: normal;
+}
+
+.tvt-handle-dot {
+    line-height: 0;
+    height: 4px;
+}
+
+.tvt-handle-dot:first-child {
+    margin-top: -5px;
+}
+
 .tvt-row+.tvt-row {
-    margin-top: 5px;
+    padding: 3px 3px 3px 0;
+}
+
+.tvtEditor.drag .tvt-header {
+    margin-left: 10px;
 }
 
 .tvt-header {
