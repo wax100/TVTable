@@ -178,6 +178,7 @@
 .tvt-button.disabled {
     background-color: #cacaca;
     background-image: unset;
+    box-shadow: none;
 }
 
 .tvt-button:disabled:hover,
