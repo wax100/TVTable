@@ -8,6 +8,7 @@ $resource = (int) $modx->getOption('id', $scriptProperties, '');
 $x = $modx->getOption('getX', $scriptProperties, '');
 $y = $modx->getOption('getY', $scriptProperties, '');
 $head = $modx->getOption('head', $scriptProperties, true, true);
+$display_headers = $modx->getOption('displayHeaders', $scriptProperties, false, true);
 
 $tdTpl = $modx->getOption('tdTpl', $scriptProperties, '@INLINE <td>[[+val]]</td>', true);
 $thTpl = $modx->getOption('thTpl', $scriptProperties, '@INLINE <th>[[+val]]</th>', true);
@@ -58,6 +59,23 @@ if ($x !== '' && $y === '') {
     if ($y === 'last') { $y = count($tvtArr[$x]) - 1; }
     return $tvtArr[$x][$y];
 } else {
+    if ($display_headers) {
+        $query = $modx->newQuery('modTemplateVar');
+        $query->where(array('id' => $tv));
+        $query->where(array('name' => $tv), xPDOQuery::SQL_OR);
+        if ($tv_obj = $modx->getObject('modTemplateVar', $query)) {
+            $tv_props = $tv_obj->get('input_properties');
+            $headers = explode('||', $tv_props['headers']);
+            if (count($headers)) {
+                $column_count = count($tvtArr[0]);
+                $header_row = array();
+                for ($i = 0; $i < $column_count; $i++) {
+                    $header_row[] = $headers[$i];
+                }
+                array_unshift($tvtArr, $header_row);
+            }
+        }
+    }
     $values = $tvtArr;
 }
 
