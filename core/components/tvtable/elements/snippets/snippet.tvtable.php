@@ -79,6 +79,8 @@ if ($x !== '' && $y === '') {
     $values = $tvtArr;
 }
 
+if (empty($values)) return;
+
 /** @var pdoFetch $pdoFetch */
 $fqn = $modx->getOption('pdoFetch.class', null, 'pdotools.pdofetch', true);
 $path = $modx->getOption('pdofetch_class_path', null, MODX_CORE_PATH . 'components/pdotools/model/', true);
@@ -95,22 +97,25 @@ if ($directionX) {
     foreach ($values as $value) {
         $cells .= $pdoFetch->getChunk($tdTpl, array('val' => $value), $fastMode);
     }
-    $rows .= $bodyOpen . $pdoFetch->getChunk($trTpl, array('cells' => $cells), $fastMode) . '</tbody>';
+    $rows .= $bodyOpen . $pdoFetch->getChunk($trTpl, array('cells' => $cells, 'idx' => $x), $fastMode) . '</tbody>';
 } else {
     if ($head) {
         $rows .= $headOpen;
         $head = array_shift($values);
+        $headCells = '';
         if (is_array($head)) {
             foreach ($head as $row) {
-                $rows .= $pdoFetch->getChunk($thTpl, array('val' => $row), $fastMode);
+                $headCells .= $pdoFetch->getChunk($thTpl, array('val' => $row), $fastMode);
             }
         } else {
-            $rows .= $pdoFetch->getChunk($thTpl, array('val' => $head), $fastMode);
+            $headCells .= $pdoFetch->getChunk($thTpl, array('val' => $head), $fastMode);
         }
+        $rows .= $pdoFetch->getChunk($trTpl, array('cells' => $headCells, 'idx' => 0), $fastMode);
         $rows .= '</thead>';
     }
     if ($values) {
         $rows .= $bodyOpen;
+        $idx = $head ? 1 : 0;
         foreach ($values as $row) {
             $cells = '';
             if(is_array($row)) {
@@ -120,7 +125,8 @@ if ($directionX) {
             } else {
                 $cells .= $pdoFetch->getChunk($tdTpl, array('val' => $row), $fastMode);
             }
-            $rows .= $pdoFetch->getChunk($trTpl, array('cells' => $cells), $fastMode);
+            $rows .= $pdoFetch->getChunk($trTpl, array('cells' => $cells, 'idx' => $idx), $fastMode);
+            $idx++;
         }
         $rows .= '</tbody>';
     }
