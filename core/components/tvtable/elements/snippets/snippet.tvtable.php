@@ -74,14 +74,15 @@ if ($display_headers && count($values)) {
     if ($tv_obj = $modx->getObject('modTemplateVar', $query)) {
         $tv_props = $tv_obj->get('input_properties');
         $headers = explode('||', $tv_props['headers']);
+        $headersDefault = $tv_props['headers_default'];
         if (count($headers)) {
             $column_count = ($directionX || $directionY) ? count($values) : count($values[0]);
             $header_row = array();
             if ($directionY) {
-                $header_row = $headers[$y];
+                $header_row = $headers[$y] ?: $headersDefault;
             } else {
                 for ($i = 0; $i < $column_count; $i++) {
-                    $header_row[] = $headers[$i];
+                    $header_row[] = $headers[$i] ?: $headersDefault;
                 }
             }
             if ($directionX) {

@@ -7,6 +7,7 @@ function TableTV (id) {
     this.forceCountColumns = this.field.dataset.columns;
     this.maxColumns = this.field.dataset.maxColumns;
     this.maxRows = this.field.dataset.maxRows;
+    this.headersDefault = this.field.dataset.headersDefault;
     this.headers = this.field.dataset.headers ? this.field.dataset.headers.split('||') : '';
     if (this.field.value) {
         this.value = Ext.util.JSON.decode(this.field.value);
@@ -112,14 +113,15 @@ function TableTV (id) {
                     var columns = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-input-wrapper');
                     var headerElements = this.fieldObject.elements.editor.querySelectorAll('.tvt-header .tvt-headers');
                     for (var i = 0; i < columns.length; i++) {
-                        headerElements[i].innerText = this.fieldObject.headers[i] || '';
-                        headerElements[i].setAttribute('title', this.fieldObject.headers[i] || '');
+                        var header = this.fieldObject.headers[i] || this.fieldObject.headersDefault || '';
+                        headerElements[i].innerText = header;
+                        headerElements[i].setAttribute('title', header);
                     }
                 }
             }
             if (Ext.isArray(this.headers)) {
                 var header = TVTable.createElement('span', {class: 'tvt-headers', title: this.headers[index] || ''});
-                header.innerText = this.headers[index] || '';
+                header.innerText = this.headers[index] || this.headersDefault || '';
                 wrapper.appendChild(header);
             }
             wrapper.appendChild(deleteColumn);

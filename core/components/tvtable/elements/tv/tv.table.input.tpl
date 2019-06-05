@@ -4,6 +4,7 @@
 {if $params.columns!=''}data-columns="{$params.columns}"{/if}
 {if $params.rows!=''}data-rows="{$params.rows}"{/if}
 {if $params.headers!=''}data-headers="{$params.headers}"{/if}
+{if $params.headers_default!=''}data-headers-default="{$params.headers_default}"{/if}
 {if $params.width!=''}data-width="{$params.width}"{/if}
 {if $params.drag!=''}data-drag="{$params.drag}"{/if}
 /> 

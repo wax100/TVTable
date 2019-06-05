@@ -132,6 +132,21 @@ MODx.load({
                         ,html: '{/literal}{$tvt.headers_desc}{literal}'
                         ,cls: 'desc-under'
                     },{
+                        xtype: 'textfield'
+                        ,fieldLabel: '{/literal}{$tvt.headers_default}{literal}'
+                        ,description: MODx.expandHelp ? '' : '{/literal}{$tvt.headers_default_desc}{literal}'
+                        ,name: 'inopt_headers_default'
+                        ,hiddenName: 'inopt_headers_default'
+                        ,id: 'inopt_headers_default{/literal}{$tv}{literal}'
+                        ,value: params['headers_default']
+                        ,anchor: '100%'
+                        ,listeners: oc
+                    },{
+                        xtype: MODx.expandHelp ? 'label' : 'hidden'
+                        ,forId: 'inopt_headers_default{/literal}{$tv}{literal}'
+                        ,html: '{/literal}{$tvt.headers_default_desc}{literal}'
+                        ,cls: 'desc-under'
+                    },{
                         xtype: 'numberfield'
                         ,minValue: 20
                         ,fieldLabel: '{/literal}{$tvt.width}{literal}'
