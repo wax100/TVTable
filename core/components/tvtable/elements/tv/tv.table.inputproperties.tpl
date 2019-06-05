@@ -169,7 +169,7 @@ MODx.load({
                         ,name: 'inopt_drag'
                         ,hiddenName: 'inopt_drag'
                         ,id: 'inopt_drag{/literal}{$tv}{literal}'
-                        ,value: params['drag'] || 0
+                        ,value: params['drag'] == 'true' ? 1 : 0
                         ,anchor: '100%'
                         ,listeners: oc
                     },{
