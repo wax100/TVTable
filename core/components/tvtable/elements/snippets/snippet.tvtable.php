@@ -42,6 +42,8 @@ if (!$tvtArr = $modx->fromJSON($value)) { return; };
 if ($x == 'first') $x = 0;
 if ($y == 'first') $y = 0;
 
+$values = array();
+
 if ($x !== '' && $y === '') {
     $directionX = true;
     if ($x === 'last') {
@@ -50,33 +52,46 @@ if ($x !== '' && $y === '') {
         $values = $tvtArr[$x];
     }
 } elseif ($x === '' && $y !== '') {
-    foreach ($tvtArr as $key => $row) {
-        if ($y === 'last') { $y = count($tvtArr[$key]) - 1; }
-        $values[$key] = $tvtArr[$key][$y];
+    $directionY = true;
+    if (count($tvtArr[0]) > $y) {
+        foreach ($tvtArr as $key => $row) {
+            if ($y === 'last') { $y = count($tvtArr[$key]) - 1; }
+            $values[$key] = $tvtArr[$key][$y];
+        }
     }
 } elseif ($x !== '' && $y !== '') {
     if ($x === 'last') { $x = count($tvtArr) - 1; }
     if ($y === 'last') { $y = count($tvtArr[$x]) - 1; }
     return $tvtArr[$x][$y];
 } else {
-    if ($display_headers) {
-        $query = $modx->newQuery('modTemplateVar');
-        $query->where(array('id' => $tv));
-        $query->where(array('name' => $tv), xPDOQuery::SQL_OR);
-        if ($tv_obj = $modx->getObject('modTemplateVar', $query)) {
-            $tv_props = $tv_obj->get('input_properties');
-            $headers = explode('||', $tv_props['headers']);
-            if (count($headers)) {
-                $column_count = count($tvtArr[0]);
-                $header_row = array();
+    $values = $tvtArr;
+}
+
+if ($display_headers && count($values)) {
+    $query = $modx->newQuery('modTemplateVar');
+    $query->where(array('id' => $tv));
+    $query->where(array('name' => $tv), xPDOQuery::SQL_OR);
+    if ($tv_obj = $modx->getObject('modTemplateVar', $query)) {
+        $tv_props = $tv_obj->get('input_properties');
+        $headers = explode('||', $tv_props['headers']);
+        if (count($headers)) {
+            $column_count = ($directionX || $directionY) ? count($values) : count($values[0]);
+            $header_row = array();
+            if ($directionY) {
+                $header_row = $headers[$y];
+            } else {
                 for ($i = 0; $i < $column_count; $i++) {
                     $header_row[] = $headers[$i];
                 }
-                array_unshift($tvtArr, $header_row);
+            }
+            if ($directionX) {
+                $directionX = false;
+                $values = array($header_row, $values);
+            } else {
+                array_unshift($values, $header_row);
             }
         }
     }
-    $values = $tvtArr;
 }
 
 if (empty($values)) return;
@@ -94,10 +109,13 @@ $output = $pdoFetch->run();
 $fastMode = $pdoFetch->config['fastMode'];
 
 if ($directionX) {
+    $directionXTpl = $head ? $thTpl : $tdTpl;
     foreach ($values as $value) {
-        $cells .= $pdoFetch->getChunk($tdTpl, array('val' => $value), $fastMode);
+        $cells .= $pdoFetch->getChunk($directionXTpl, array('val' => $value), $fastMode);
     }
-    $rows .= $bodyOpen . $pdoFetch->getChunk($trTpl, array('cells' => $cells, 'idx' => $x), $fastMode) . '</tbody>';
+    $rows .= $head ? $headOpen : $bodyOpen;
+    $rows .= $pdoFetch->getChunk($trTpl, array('cells' => $cells, 'idx' => $x), $fastMode);
+    $rows .= $head ? '</thead>' : '</tbody>';
 } else {
     if ($head) {
         $rows .= $headOpen;
