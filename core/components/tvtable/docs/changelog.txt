@@ -1,5 +1,12 @@
 Changelog for TVTable.
 
+3.4.0-beta
+==============
+- Added Drag'n'Drop rows sorting 
+- Added default heading property
+- Added display headers property for snippet
+- Added idx to cell tpl
+
 3.3.3-beta
 ==============
 - Fix last release bug
