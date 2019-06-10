@@ -1,7 +1,7 @@
 function TableTV (id) {
     this.id = id;
     this.field = document.getElementById(id);
-    this.drag = (this.field.dataset.drag == 'true') || false;
+    this.drag = (this.field.dataset.drag == 'true' || this.field.dataset.drag == 1) || false;
     this.width = this.field.dataset.width;
     this.forceCountRows = this.field.dataset.rows;
     this.forceCountColumns = this.field.dataset.columns;
