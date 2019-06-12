@@ -132,19 +132,43 @@ function TableTV (id) {
         var rows = this.elements.editor.querySelectorAll('.tvt-row');
 
         if (columns > 1) {
+            var column = [];
+            var values = [];
+            
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
                 var inputs = row.querySelectorAll('.tvt-input-wrapper');
 
                 if (index) {
-                    inputs[index].remove();
+                    column.push(inputs[index]);
+                    values.push(inputs[index].querySelector('input.tvt-input').value);
                 } else {
-                    inputs[inputs.length - 1].remove();
+                    column.push(inputs[inputs.length - 1]);
+                    values.push(inputs[inputs.length - 1].querySelector('input.tvt-input').value);
                 }
             }
-            this.change();
-            columns--;
+
+            if (MODx.config.tvtable_remove_confirm == 1 && TVTable.checkArray(values)) {
+                var fieldObject = this;
+                Ext.Msg.confirm(_('confirm'), _('tvtable.remove_column_confirm'), function(btn) {
+                    if (btn === 'yes') {
+                        fieldObject.removeColumnForce(column);
+                    }
+                });
+            } else {
+                this.removeColumnForce(column);
+            }
         }
+    }
+    this.removeColumnForce = function(column) {
+        var columns = this.elements.header.querySelectorAll('input.tvt-input').length;
+
+        column.forEach(function(el) {
+            el.remove();
+        });
+
+        this.change();
+        columns--;
 
         if (columns === 1) {
             this.elements.removeColumn.classList.add('disabled');
