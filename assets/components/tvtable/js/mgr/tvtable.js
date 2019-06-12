@@ -241,7 +241,7 @@ function TableTV (id) {
             this.elements.header.appendChild(this.elements.clearTable);
             this.elements.clearTable.onclick = function () {
                 var that = this;
-                Ext.Msg.confirm(_('tvtable.clear_table'), _('tvtable.clear_table_confirm'), function(btn) {
+                Ext.Msg.confirm(_('confirm'), _('tvtable.clear_table_confirm'), function(btn) {
                     if (btn === 'yes') {
                         var inputs = that.fieldObject.elements.editor.querySelectorAll('input.tvt-input');
                         inputs.forEach(function(e){e.value = ''});
@@ -304,7 +304,7 @@ function TableTV (id) {
                     if (e.value != '') { rowsEmpty = false }
                 });
                 if (!rowsEmpty) {
-                    Ext.Msg.confirm(_('tvtable.confirm'), _('tvtable.remove_row_confirm'), function(btn) {
+                    Ext.Msg.confirm(_('confirm'), _('tvtable.remove_row_confirm'), function(btn) {
                         if (btn === 'yes') {
                             fieldObject.removeRow(row);
                         }
