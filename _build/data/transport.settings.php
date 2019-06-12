@@ -10,6 +10,11 @@ $tmp = array(
         'value' => false,
         'area' => 'tvtable_main',
     ),
+    'remove_confirm' => array(
+        'xtype' => 'combo-boolean',
+        'value' => true,
+        'area' => 'tvtable_main',
+    ),
 );
 
 foreach ($tmp as $k => $v) {
