@@ -296,28 +296,48 @@ function TableTV (id) {
         }));
         removeRow.fieldObject = this;
         removeRow.onclick = function() {
-            var parent = this.parentNode;
-            parent.remove();
-            this.fieldObject.change();
-    
-            var maxRows = this.fieldObject.maxRows;
-            var rows = this.fieldObject.elements.editor.querySelectorAll('.tvt-row');
-    
-            if (maxRows > 1 && rows.length < maxRows) {
-                this.fieldObject.elements.editor.querySelectorAll('.add-row').forEach(function(button){
-                    button.classList.remove('disabled');
-                    button.removeAttribute('disabled');
+            var row = this.parentNode;
+            var fieldObject = this.fieldObject;
+            if (MODx.config.tvtable_remove_confirm == 1) {
+                var rowsEmpty = true;
+                row.querySelectorAll('input.tvt-input').forEach(function(e) {
+                    if (e.value != '') { rowsEmpty = false }
                 });
-            }
-
-            if (typeof this.fieldObject.forceCountRows !== 'undefined' && rows.length <= this.fieldObject.forceCountRows) {
-                this.fieldObject.elements.editor.querySelectorAll('.remove-row').forEach(function(button){
-                    button.remove();
-                });
+                if (!rowsEmpty) {
+                    Ext.Msg.confirm(_('tvtable.confirm'), _('tvtable.remove_row_confirm'), function(btn) {
+                        if (btn === 'yes') {
+                            fieldObject.removeRow(row);
+                        }
+                    });
+                } else {
+                    fieldObject.removeRow(row);
+                }
+            } else {
+                fieldObject.removeRow(row);
             }
         }
 
         return removeRow;
+    }
+    this.removeRow = function (row) {
+        row.remove();
+        this.change();
+
+        var maxRows = this.maxRows;
+        var rows = this.elements.editor.querySelectorAll('.tvt-row');
+
+        if (maxRows > 1 && rows.length < maxRows) {
+            this.elements.editor.querySelectorAll('.add-row').forEach(function(button){
+                button.classList.remove('disabled');
+                button.removeAttribute('disabled');
+            });
+        }
+
+        if (typeof this.forceCountRows !== 'undefined' && rows.length <= this.forceCountRows) {
+            this.elements.editor.querySelectorAll('.remove-row').forEach(function(button){
+                button.remove();
+            });
+        }
     }
     this.addRow = function(values, row, disabled, withoutAddButton, withoutRemoveButton) {
         var rowDiv = TVTable.createElement('div', {class: 'tvt-row'});
