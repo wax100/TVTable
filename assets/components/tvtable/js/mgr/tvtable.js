@@ -86,10 +86,7 @@ function TableTV (id) {
         });
         cell.fieldObject = this;
         cell.onkeyup = function() {            
-            if (MODx.config.tvtable_clear_button == 1) {
-                var clearBtn = this.fieldObject.elements.editor.querySelector('.clear-table');
-                clearBtn.style.display = 'inline-flex';
-            }
+            if (MODx.config.tvtable_clear_button == 1) { this.fieldObject.elements.clearTable.style.display = 'inline-flex' }
             this.fieldObject.change();
         }
         if (isHeader) {
@@ -240,17 +237,24 @@ function TableTV (id) {
             this.elements.clearTable.fieldObject = this;
             this.elements.header.appendChild(this.elements.clearTable);
             this.elements.clearTable.onclick = function () {
-                var that = this;
-                Ext.Msg.confirm(_('confirm'), _('tvtable.clear_table_confirm'), function(btn) {
-                    if (btn === 'yes') {
-                        var inputs = that.fieldObject.elements.editor.querySelectorAll('input.tvt-input');
-                        inputs.forEach(function(e){e.value = ''});
-                        if (MODx.config.tvtable_clear_button == 1) {that.style.display = 'none' }
-                        that.fieldObject.change();
-                    }
-                });
+                var fieldObject = this.fieldObject;
+                if (MODx.config.tvtable_remove_confirm == 1) {
+                    Ext.Msg.confirm(_('confirm'), _('tvtable.clear_table_confirm'), function(btn) {
+                        if (btn === 'yes') {
+                            fieldObject.clearTable();
+                        }
+                    });
+                } else {
+                    fieldObject.clearTable();
+                }
             }
         }
+    }
+    this.clearTable = function() {
+        var inputs = this.elements.editor.querySelectorAll('input.tvt-input');
+        inputs.forEach(function(e){e.value = ''});
+        if (MODx.config.tvtable_clear_button == 1) { this.elements.clearTable.style.display = 'none' }
+        this.change();
     }
     this.createAddRow = function (disabled) {
         var addRow = TVTable.createElement('button', {
