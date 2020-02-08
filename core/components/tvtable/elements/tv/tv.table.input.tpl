@@ -1,18 +1,23 @@
-<input id="tv{$tv->id}" name="tv{$tv->id}" class="textfield" value="{$tv->get('value')|escape}" type="text"
-{if $params.maxColumns!=''}data-max-columns="{$params.maxColumns}"{/if}
-{if $params.maxRows!=''}data-max-rows="{$params.maxRows}"{/if}
-{if $params.columns!=''}data-columns="{$params.columns}"{/if}
-{if $params.rows!=''}data-rows="{$params.rows}"{/if}
-{if $params.headers!=''}data-headers="{$params.headers}"{/if}
-{if $params.headers_default!=''}data-headers-default="{$params.headers_default}"{/if}
-{if $params.width!=''}data-width="{$params.width}"{/if}
-{if $params.drag!=''}data-drag="{$params.drag}"{/if}
-/> 
+<input id="tv{$tv->id}" name="tv{$tv->id}" class="textfield" value="{$tv->get('value')|escape}" type="text"/>
+<script>
+    if (typeof Sortable === 'undefined') {
+        document.write('<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"><\/script>');
+    }
+</script>
 <script type="text/javascript">  
     window.ie9=window.XDomainRequest && window.performance; window.ie=window.ie && !window.ie9; /* IE9 patch */
     
     Ext.onReady(function() {
-        var tvId = "tv" + "{$tv->id}";
-        new TableTV(tvId);
+        var tvId = 'tv' + '{$tv->id}';
+        new TableTV(tvId, {
+            {if $params.maxColumns!=''}maxColumns: {$params.maxColumns},{/if}
+            {if $params.maxRows!=''}maxRows: {$params.maxRows},{/if}
+            {if $params.columns!=''}forceCountColumns: {$params.columns},{/if}
+            {if $params.rows!=''}forceCountRows: {$params.rows},{/if}
+            {if $params.headers!=''}headers: '{$params.headers}',{/if}
+            {if $params.headers_default!=''}headersDefault: '{$params.headers_default}',{/if}
+            {if $params.width!=''}width: {$params.width},{/if}
+            {if $params.drag!=''}drag: {$params.drag}{/if}
+        });
     });
 </script>

@@ -1,8 +1,38 @@
 .tvtEditor {
+    position: relative;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px 20px 0 6px;
+    padding: 20px 20px 0 5px;
+}
+
+.tvt-toolbar {
+    position: absolute;
+    top: 20px;
+    padding: 5px 0;
+    left: calc(100% - 20px);
+    display: flex;
+    align-items: center;
+    background: #f0f0ee;
+}
+
+.tvt-toolbar .tvt-button {
+    margin-left: 0;
+    margin-right: 5px;
+}
+
+.tvt-header {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    width: 100%;
+    height: 20px;
+    display: flex;
+}
+
+.tvt-tmp {
+    position: relative;
+    width: 216px;
 }
 
 .tvt-input {
@@ -46,8 +76,8 @@
 .tvt-headers,
 .tvt-delete-column {
     position: absolute;
-    padding: 6px 0;
-    bottom: 100%;
+    padding: 3px 0 3px;
+    top: 0;
     left: 0;
     width: 100%;
     font-size: 11px;
@@ -118,12 +148,12 @@
 .tvt-handle {
     position: absolute;
     top: 0;
-    left: -14px;
+    left: -13px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 10px;
-    height: 30px;
+    height: 34px;
     color: #000;
     cursor: move;
     padding: 3px 2px;
@@ -142,21 +172,20 @@
 }
 
 .tvt-row+.tvt-row {
-    padding: 3px 3px 3px 0;
+    padding: 3px 5px 3px 5px;
 }
 
-.tvt-header {
+.tvt-row:first-child {
     align-items: flex-end;
     background: #f0f0ee;
     padding: 5px;
-    margin-left: -5px;
 }
 
-.tvt-header .tvt-input-wrapper {
+.tvt-row:first-child .tvt-input-wrapper {
     position: relative;
 }
 
-.tvt-header:not(.locked) .tvt-input-wrapper:hover .tvt-delete-column {
+.tvtEditor:not(.locked) .tvt-tmp:hover .tvt-delete-column {
     display: block;
 }
 
