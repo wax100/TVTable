@@ -1,8 +1,14 @@
 Changelog for TVTable.
 
+3.5.0-pl
+==============
+- ES6 refactor
+- Fixed first row inability to remove and sort
+- Change custom drag to Sortable.js (use CDN)
+
 3.4.1-beta
 ==============
-- Added confirm before removing rows, columns and clearing table 
+- Added confirm before removing rows, columns and clearing table
 
 3.4.0-beta
 ==============
