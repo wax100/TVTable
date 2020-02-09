@@ -145,14 +145,11 @@ class TableTV {
 
             rows.forEach(row => {
                 let inputs = this.getInputsWrappers(row);
+                index = index || inputs.length - 1;
+                let field = this.getInput(inputs[index]);
 
-                if (index) {
-                    column.push(inputs[index]);
-                    values.push(this.getInputs(inputs[index]).value);
-                } else {
-                    column.push(inputs[inputs.length - 1]);
-                    values.push(this.getInputs(inputs[inputs.length - 1]).value);
-                }
+                column.push(inputs[index]);
+                values.push(field.value);
             });
 
             if (MODx.config.tvtable_remove_confirm == 1 && TableTV.checkArray(values)) {
@@ -473,6 +470,10 @@ class TableTV {
 
     getInputsWrappers(row) {
         return row.querySelectorAll('.tvt-input-wrapper');
+    }
+
+    getInput(row) {
+        return row.querySelector('input.tvt-input');
     }
 
     getInputs(row) {
