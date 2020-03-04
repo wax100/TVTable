@@ -5,6 +5,9 @@
 
 ### Latest Changes
 
+#### 3.5.1-pl
+- Fixed version of assets
+
 #### 3.5.0-pl
 - ES6 refactor
 - Fixed first row inability to remove and sort
