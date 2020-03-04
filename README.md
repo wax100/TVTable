@@ -7,6 +7,7 @@
 
 #### 3.5.1-pl
 - Fixed version of assets
+- Fixed path of assets in main plugin (#10, thanks to @kondakovdm)
 
 #### 3.5.0-pl
 - ES6 refactor
