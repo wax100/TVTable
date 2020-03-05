@@ -20,10 +20,7 @@ class TableTV {
         } else {
             let value = Array.from({length: this.rows || this.forceCountRows || 1}); // rows
             if (value && value.length > 0) {
-                let values = value.map(() => {
-                    return value[i] = Array.from({length: this.columns || this.forceCountColumns || 1});
-                });
-                this.value = values;
+                this.value = value.map(() => Array.from({length: this.columns || this.forceCountColumns || 1}));
             }
         }
 
