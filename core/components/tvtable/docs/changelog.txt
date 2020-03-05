@@ -1,5 +1,9 @@
 Changelog for TVTable.
 
+3.5.2-pl
+==============
+- Fixed formation with empty field value [JS]
+
 3.5.1-pl
 ==============
 - Fixed version of assets

@@ -5,6 +5,9 @@
 
 ### Latest Changes
 
+#### 3.5.2-pl
+- Fixed formation with empty field value [JS]
+
 #### 3.5.1-pl
 - Fixed version of assets
 - Fixed path of assets in main plugin (#10, thanks to @kondakovdm)
