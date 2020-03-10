@@ -99,7 +99,7 @@ class TableTV {
             addDisabled = this.rows >= this.maxRows ? true : false,
             removeDisabled = this.rows <= 1 ? true : false;
     
-        for (var row = 0; row < this.rows; row++) {
+        for (let row = 0; row < this.rows; row++) {
             this.addRow(this.value[row], null, addDisabled, removeDisabled, withoutAddButton, withoutRemoveButton);
         }
 
@@ -243,21 +243,20 @@ class TableTV {
                 }
             });
         }
+
         if (MODx.config.tvtable_clear_button == 1) {
-            this.elements.clearTable.fieldObject = this;
             this.elements.toolbar.appendChild(this.elements.clearTable);
-            this.elements.clearTable.onclick = function () {
-                var fieldObject = this.fieldObject;
+            this.elements.clearTable.addEventListener('click', e => {
                 if (MODx.config.tvtable_remove_confirm == 1) {
-                    Ext.Msg.confirm(_('confirm'), _('tvtable.clear_table_confirm'), function(btn) {
+                    Ext.Msg.confirm(_('confirm'), _('tvtable.clear_table_confirm'), btn => {
                         if (btn === 'yes') {
-                            fieldObject.clearTable();
+                            this.clearTable();
                         }
                     });
                 } else {
-                    fieldObject.clearTable();
+                    this.clearTable();
                 }
-            }
+            })
         }
     }
 
@@ -363,7 +362,7 @@ class TableTV {
         let rowDiv = TableTV.createElement('div', {class: 'tvt-row'});
         if (this.drag) {
             let handle = TableTV.createElement('span', {class: 'tvt-handle'});
-            for (var i = 0; i < 3; i++) {
+            for (let i = 0; i < 3; i++) {
                 let handleDot = TableTV.createElement('span', {class: 'tvt-handle-dot'});
                 handleDot.innerText = '..';
                 handle.appendChild(handleDot);
@@ -379,11 +378,11 @@ class TableTV {
         }
         
         if (typeof values == 'number') {
-            for (var i = 0; i < values; i++) {
+            for (let i = 0; i < values; i++) {
                 rowDiv.appendChild(this.createCell());
             }
         } else {
-            for (var i = 0; i < values.length; i++) {
+            for (let i = 0; i < values.length; i++) {
                 rowDiv.appendChild(this.createCell(values[i]));
             }
         }
@@ -410,7 +409,7 @@ class TableTV {
                 deleteColumn.innerText = '\u2716';
                 deleteColumn.setAttribute('title', _('tvtable.del_column'));
             }
-            deleteColumn.onclick = e => {
+            deleteColumn.addEventListener('click', e => {
                 let target = e.currentTarget;
                 this.removeColumn(target.dataset.columnIndex);
                 let buttons = this.getColumnDeleteButtons();
@@ -425,7 +424,7 @@ class TableTV {
                         headerElements[i].setAttribute('title', header);
                     }
                 }
-            }
+            });
 
             let tmp = TableTV.createElement('div', {class: 'tvt-tmp'});
             if (this.width) tmp.style.width = (this.width + 16) + 'px';
