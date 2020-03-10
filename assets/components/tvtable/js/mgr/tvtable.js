@@ -94,12 +94,13 @@ class TableTV {
         this.header = this.value[0];
         this.addHeader();
 
-        let withoutAddButton = (typeof this.forceCountRows !== 'undefined' && this.rows >= this.forceCountRows) ? true : false;
-        let withoutRemoveButton = (typeof this.forceCountRows !== 'undefined' && this.rows <= this.forceCountRows) ? true : false;
-        let disabled = this.rows >= this.maxRows ? true : false;
+        let withoutAddButton = (typeof this.forceCountRows !== 'undefined' && this.rows >= this.forceCountRows) ? true : false,
+            withoutRemoveButton = (typeof this.forceCountRows !== 'undefined' && this.rows <= this.forceCountRows) ? true : false,
+            addDisabled = this.rows >= this.maxRows ? true : false,
+            removeDisabled = this.rows <= 1 ? true : false;
     
         for (var row = 0; row < this.rows; row++) {
-            this.addRow(this.value[row], null, disabled, withoutAddButton, withoutRemoveButton);
+            this.addRow(this.value[row], null, addDisabled, removeDisabled, withoutAddButton, withoutRemoveButton);
         }
 
         this.update();
@@ -304,11 +305,17 @@ class TableTV {
         return addRow;
     }
 
-    createRemoveRow() {
+    createRemoveRow(disabled) {
         let removeRow = TableTV.createElement('button', {
             title: _('tvtable.del_row')
             ,class: 'remove-row x-btn x-btn-small tvt-button tvt-button-danger'
         });
+
+        if (disabled) {
+            removeRow.classList.add('disabled');
+            removeRow.setAttribute('disabled', true);
+        }
+
         removeRow.appendChild(TableTV.createElement('i', {class: 'icon icon-minus'}));
         removeRow.addEventListener('click', e => {
             let row = e.currentTarget.parentNode;
@@ -329,6 +336,7 @@ class TableTV {
     }
 
     removeRow(row) {
+        if (this.rows <= 1) { return; }
         row.remove();
         this.change();
 
@@ -351,7 +359,7 @@ class TableTV {
         }
     }
 
-    addRow(values, row, disabled, withoutAddButton, withoutRemoveButton) {
+    addRow(values, row, addDisabled, removeDisabled, withoutAddButton, withoutRemoveButton) {
         let rowDiv = TableTV.createElement('div', {class: 'tvt-row'});
         if (this.drag) {
             let handle = TableTV.createElement('span', {class: 'tvt-handle'});
@@ -379,8 +387,8 @@ class TableTV {
                 rowDiv.appendChild(this.createCell(values[i]));
             }
         }
-        if (!withoutAddButton) rowDiv.appendChild(this.createAddRow(disabled));
-        if (!withoutRemoveButton) rowDiv.appendChild(this.createRemoveRow());
+        if (!withoutAddButton) rowDiv.appendChild(this.createAddRow(addDisabled));
+        if (!withoutRemoveButton) rowDiv.appendChild(this.createRemoveRow(removeDisabled));
     }
     
     update() {
