@@ -5,6 +5,9 @@
 
 ### Latest Changes
 
+#### 3.5.3-pl
+- Fixed bug render field on MIGX window
+
 #### 3.5.2-pl
 - Fixed formation with empty field value [JS]
 
