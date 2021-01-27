@@ -5,6 +5,9 @@
 
 ### Latest Changes
 
+#### 3.5.4-pl
+- Added row and col numbers
+
 #### 3.5.3-pl
 - Fixed bug render field on MIGX window
 
