@@ -123,8 +123,10 @@ if ($directionX) {
         $head = array_shift($values);
         $headCells = '';
         if (is_array($head)) {
+            $col = 0;
             foreach ($head as $row) {
-                $headCells .= $pdoFetch->getChunk($thTpl, array('val' => $row), $fastMode);
+                $headCells .= $pdoFetch->getChunk($thTpl, array('val' => $row, 'row' => $idx + 1, 'col' => $col + 1), $fastMode);
+                $col++;
             }
         } else {
             $headCells .= $pdoFetch->getChunk($thTpl, array('val' => $head), $fastMode);
@@ -138,8 +140,10 @@ if ($directionX) {
         foreach ($values as $row) {
             $cells = '';
             if(is_array($row)) {
+                $col = 0;
                 foreach ($row as $cell) {
-                    $cells .= $pdoFetch->getChunk($tdTpl, array('val' => $cell), $fastMode);
+                    $cells .= $pdoFetch->getChunk($tdTpl, array('val' => $cell, 'row' => $idx + 1, 'col' => $col + 1), $fastMode);
+                    $col++;
                 }
             } else {
                 $cells .= $pdoFetch->getChunk($tdTpl, array('val' => $row), $fastMode);
@@ -153,4 +157,4 @@ if ($directionX) {
 
 $output = $pdoFetch->getChunk($wrapperTpl, array('table' => $rows, 'classname' => $classname), $fastMode);
 
-return $output;        
+return $output;
