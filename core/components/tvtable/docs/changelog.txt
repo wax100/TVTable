@@ -1,5 +1,9 @@
 Changelog for TVTable.
 
+4.0.0-pl
+==============
+- Add Modx3 support
+
 3.5.4-pl
 ==============
 - Added row and col numbers
